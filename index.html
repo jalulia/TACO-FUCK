@@ -1734,6 +1734,9 @@ function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
   document.getElementById('tab-' + name).classList.add('active');
   btn.classList.add('active');
+  if (name === 'meat') {
+    setTimeout(function() { initMeatCharts(); }, 50);
+  }
 }
 
 // ── EVENTS ──
@@ -1952,8 +1955,11 @@ const MEAT_EVENTS = [
 ];
 
 // ── TACO MEAT CHARTS ──
-(function() {
+let meatChartsInitialized = false;
+function initMeatCharts() {
+  if (meatChartsInitialized) return;
   if (typeof MEAT_DATA === 'undefined') return;
+  meatChartsInitialized = true;
   
   const mLabels = MEAT_DATA.map(d => d.date);
   const mtt = {backgroundColor:'#0a0a0a',borderColor:'#222',borderWidth:1,padding:10,titleFont:{weight:'700'},bodyFont:{size:10}};
@@ -2053,7 +2059,7 @@ const MEAT_EVENTS = [
       </div>`;
     });
   }
-})();
+}
 
 
 </script>
