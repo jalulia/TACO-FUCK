@@ -694,6 +694,325 @@
     .threat-gauge { flex-direction: column; }
     .defcon-strip { grid-template-columns: repeat(5, 1fr); font-size: 7px; }
   }
+
+
+  /* HOLY TACO TAB */
+  .holy-hero {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .holy-title {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: clamp(36px, 6vw, 64px);
+    color: var(--yellow);
+    text-shadow: 0 0 40px rgba(255,208,0,0.3);
+    letter-spacing: -1px;
+  }
+
+  .holy-sub {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    font-weight: 700;
+    margin-top: 4px;
+  }
+
+  .holy-desc {
+    font-size: 14px;
+    color: var(--text-dim);
+    max-width: 600px;
+    margin: 16px auto 0;
+    line-height: 1.8;
+  }
+
+  .grift-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--yellow);
+    padding: 28px;
+    margin-bottom: 2px;
+  }
+
+  .grift-section.irony { border-left-color: var(--red); }
+  .grift-section.sources { border-left-color: var(--text-dim); }
+
+  .grift-header {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 15px;
+    color: var(--yellow);
+    margin-bottom: 4px;
+  }
+
+  .grift-section.irony .grift-header { color: var(--red); }
+  .grift-section.sources .grift-header { color: var(--text-dim); }
+
+  .grift-icon { margin-right: 8px; }
+
+  .grift-subtitle {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .grift-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .grift-grid.small {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .grift-card {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .grift-num {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 1.1;
+  }
+
+  .grift-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.4;
+  }
+
+  .grift-source {
+    font-size: 8px;
+    color: #333;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .grift-quote {
+    background: #0a0000;
+    border: 1px solid var(--red-dim);
+    padding: 20px;
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.8;
+    font-style: italic;
+    margin-top: 16px;
+  }
+
+  .grift-quote strong { color: var(--text); font-style: normal; }
+
+  .grift-attribution {
+    display: block;
+    margin-top: 8px;
+    font-size: 10px;
+    color: #444;
+    font-style: normal;
+    letter-spacing: 0.5px;
+  }
+
+  /* IRONY TIMELINE */
+  .irony-timeline { margin: 8px 0; }
+
+  .irony-item {
+    display: flex;
+    gap: 16px;
+    padding: 14px 0;
+    border-bottom: 1px solid #111;
+  }
+
+  .irony-date {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--yellow);
+    min-width: 100px;
+    letter-spacing: 0.5px;
+  }
+
+  .irony-event {
+    font-size: 13px;
+    color: var(--text-dim);
+    line-height: 1.7;
+  }
+
+  .irony-event strong { color: var(--text); }
+
+  .irony-tag {
+    display: inline-block;
+    font-size: 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #555;
+    border: 1px solid #333;
+    padding: 1px 6px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* SPEND BARS */
+  .spend-bar-section { margin: 8px 0 16px; }
+
+  .spend-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .spend-bar-label {
+    font-size: 10px;
+    color: var(--text-dim);
+    min-width: 140px;
+  }
+
+  .spend-bar-track {
+    flex: 1;
+    height: 20px;
+    background: #111;
+    border: 1px solid #1a1a1a;
+    position: relative;
+  }
+
+  .spend-bar-fill {
+    height: 100%;
+    transition: width 1s ease;
+  }
+
+  .spend-bar-value {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 16px;
+    min-width: 60px;
+    text-align: right;
+  }
+
+  .spend-detail {
+    font-size: 11px;
+    color: #444;
+    line-height: 1.6;
+  }
+
+  /* APPROVAL BARS */
+  .approval-track { margin: 8px 0 20px; }
+
+  .approval-bar-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .approval-bar {
+    height: 28px;
+    background: linear-gradient(90deg, var(--red-dim), var(--red));
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 13px;
+    color: #fff;
+    transition: width 1s ease;
+  }
+
+  .approval-bar.dimmed {
+    background: linear-gradient(90deg, #551122, #882233);
+  }
+
+  .approval-date {
+    font-size: 10px;
+    color: var(--text-dim);
+    min-width: 80px;
+  }
+
+  .approval-contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+
+  .approval-stat {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .approval-stat-val {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 36px;
+  }
+
+  .approval-stat-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .approval-stat-desc strong { color: var(--text); }
+
+  /* PROSPERITY GRID */
+  .prosperity-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    margin-bottom: 16px;
+  }
+
+  .prosperity-item {
+    background: #0d0d0d;
+    border: 1px solid #1a1a1a;
+    padding: 16px;
+  }
+
+  .prosperity-role {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 11px;
+    color: var(--yellow);
+    margin-bottom: 6px;
+  }
+
+  .prosperity-desc {
+    font-size: 11px;
+    color: var(--text-dim);
+    line-height: 1.6;
+  }
+
+  /* SOURCE LIST */
+  .source-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .source-list a {
+    font-size: 11px;
+    color: #444;
+    text-decoration: none;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 6px 0;
+    transition: color 0.15s;
+  }
+
+  .source-list a:hover { color: var(--yellow); }
+
+  @media (max-width: 700px) {
+    .grift-grid { grid-template-columns: repeat(2, 1fr); }
+    .grift-grid.small { grid-template-columns: repeat(2, 1fr); }
+    .prosperity-grid { grid-template-columns: 1fr; }
+    .approval-contrast { grid-template-columns: 1fr; }
+  }
+
 </style>
 </head>
 <body>
@@ -727,6 +1046,7 @@
     <button class="tab-btn active" onclick="switchTab('dashboard',this)">DASHBOARD</button>
     <button class="tab-btn" onclick="switchTab('explainer',this)">WTF IS THIS</button>
     <button class="tab-btn" onclick="switchTab('data',this)">RAW DATA</button>
+    <button class="tab-btn" onclick="switchTab('holy',this)" style="color:var(--yellow-dim)">HOLY TACO</button>
   </div>
 
   <!-- ════════ DASHBOARD ════════ -->
@@ -897,7 +1217,266 @@
     </div>
   </div>
 
-  <div class="disclaim">
+  
+  <!-- ════════ HOLY TACO ════════ -->
+  <div id="tab-holy" class="tab-content">
+    
+    <div class="exp-page">
+
+      <div class="holy-hero">
+        <div class="holy-title">HOLY TACO</div>
+        <div class="holy-sub">THE EVANGELICAL GRIFT TRACKER</div>
+        <p class="holy-desc">Follow the money where faith meets MAGA. Every number below is real, sourced from financial disclosures, IRS filings, government procurement records, and polling data.</p>
+      </div>
+
+      <!-- BIBLE GRIFT METER -->
+      <div class="grift-section">
+        <div class="grift-header">
+          <span class="grift-icon">\u2702</span>
+          THE TRUMP BIBLE GRIFT
+        </div>
+        <div class="grift-subtitle">A Bible printed in China for $3, sold to patriots for $60, nearly banned by its own tariffs</div>
+
+        <div class="grift-grid">
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--yellow)">&lt;$3</div>
+            <div class="grift-label">Cost to print in China</div>
+            <div class="grift-source">PBS / trade records</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--red)">$59.99</div>
+            <div class="grift-label">Retail price</div>
+            <div class="grift-source">godblessthenusabible.com</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--magenta)">$1,000</div>
+            <div class="grift-label">Signed edition</div>
+            <div class="grift-source">Yes, really</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--yellow)">$1.3M</div>
+            <div class="grift-label">Trump's royalties (2025)</div>
+            <div class="grift-source">Christianity Today / financial disclosure</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--orange)">120,000</div>
+            <div class="grift-label">Bibles shipped from Hangzhou, China</div>
+            <div class="grift-source">PBS / trade records</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--cyan)">~$7M</div>
+            <div class="grift-label">Estimated total revenue</div>
+            <div class="grift-source">120K units &times; $59.99</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TARIFF VS BIBLE IRONY -->
+      <div class="grift-section irony">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F525</span>
+          THE IRONY SINGULARITY
+        </div>
+        <div class="grift-subtitle">Trump's tariffs nearly caused a Bible shortage in America. Then he exempted Bibles. Then he claimed Bible sales were at a 100-year high.</div>
+
+        <div class="irony-timeline">
+          <div class="irony-item">
+            <div class="irony-date">APR 2, 2025</div>
+            <div class="irony-event">
+              <strong>"Liberation Day"</strong> &mdash; 34% tariff on Chinese imports.
+              75% of US Bibles are printed in China. Christian publishers panic.
+              CBS News warns of a <strong>"Bible shortage."</strong>
+            </div>
+          </div>
+          <div class="irony-item">
+            <div class="irony-date">APR 9, 2025</div>
+            <div class="irony-event">
+              90-day tariff pause. The TACO. But uncertainty remains for publishers.
+            </div>
+          </div>
+          <div class="irony-item">
+            <div class="irony-date">APR 24, 2025</div>
+            <div class="irony-event">
+              US Customs confirms: <strong>Bibles are exempt from tariffs.</strong>
+              The Word of God gets a carve-out. Other books don't.
+              <span class="irony-tag">Christianity Today</span>
+            </div>
+          </div>
+          <div class="irony-item">
+            <div class="irony-date">FEB 2026</div>
+            <div class="irony-event">
+              At the National Prayer Breakfast, Trump claims:
+              <strong>"In 2025, more copies of the Holy Bible were sold than at any time in the last 100 years."</strong>
+              <span class="irony-tag">National Today</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OKLAHOMA BIBLE MANDATE -->
+      <div class="grift-section">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F3EB</span>
+          THE OKLAHOMA BIBLE MANDATE
+        </div>
+        <div class="grift-subtitle">A state superintendent wrote Bible requirements that only Trump's Bible could meet. Then asked for $3M in taxpayer money to buy them.</div>
+
+        <div class="grift-grid small">
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--red)">$25K</div>
+            <div class="grift-label">Taxpayer money spent on 500 Trump Bibles</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--orange)">$3M</div>
+            <div class="grift-label">Budget request (rejected by legislature)</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--cyan)">13</div>
+            <div class="grift-label">School districts that refused the mandate</div>
+          </div>
+          <div class="grift-card">
+            <div class="grift-num" style="color:var(--green)">OCT 2025</div>
+            <div class="grift-label">New superintendent pulls the plug</div>
+          </div>
+        </div>
+
+        <div class="grift-quote">
+          "The RFP on its face seems fair, but with additional scrutiny, we can see there are very few Bibles on the market that would meet these criteria, and all of them have been endorsed by former President Donald Trump."
+          <span class="grift-attribution">&mdash; Oklahoma Appleseed Center for Law and Justice</span>
+        </div>
+      </div>
+
+      <!-- HE GETS US -->
+      <div class="grift-section">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F4FA</span>
+          HE GETS US &mdash; THE $430 MILLION JESUS AD CAMPAIGN
+        </div>
+        <div class="grift-subtitle">A billion-dollar campaign to market Jesus like a consumer product. Funded by the same networks. Super Bowl ads at $7-8M a pop.</div>
+
+        <div class="spend-bar-section">
+          <div class="spend-bar-item">
+            <div class="spend-bar-label">2021&ndash;2024 actual spend</div>
+            <div class="spend-bar-track">
+              <div class="spend-bar-fill" style="width:43%;background:var(--magenta)"></div>
+            </div>
+            <div class="spend-bar-value" style="color:var(--magenta)">$430M</div>
+          </div>
+          <div class="spend-bar-item">
+            <div class="spend-bar-label">2024&ndash;2026 projected</div>
+            <div class="spend-bar-track">
+              <div class="spend-bar-fill" style="width:35%;background:var(--orange)"></div>
+            </div>
+            <div class="spend-bar-value" style="color:var(--orange)">$345M</div>
+          </div>
+          <div class="spend-bar-item">
+            <div class="spend-bar-label">Stated goal (total)</div>
+            <div class="spend-bar-track">
+              <div class="spend-bar-fill" style="width:100%;background:var(--yellow)"></div>
+            </div>
+            <div class="spend-bar-value" style="color:var(--yellow)">$1B</div>
+          </div>
+        </div>
+
+        <div class="spend-detail">
+          Funded by the Signatry Foundation (IRS filings). Super Bowl ads: 3 consecutive years (2023&ndash;2025), at $7&ndash;8M per slot.
+          The Come Near nonprofit projected $345M in spending through June 2026.
+        </div>
+      </div>
+
+      <!-- EVANGELICAL APPROVAL -->
+      <div class="grift-section">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F4CA</span>
+          THE FLOCK &mdash; WHITE EVANGELICAL APPROVAL OF TRUMP
+        </div>
+        <div class="grift-subtitle">His most loyal base. But even the faithful are slipping.</div>
+
+        <div class="approval-track">
+          <div class="approval-bar-wrap">
+            <div class="approval-bar" style="width:78%"><span>78%</span></div>
+            <div class="approval-date">Early 2025</div>
+          </div>
+          <div class="approval-bar-wrap">
+            <div class="approval-bar" style="width:72%"><span>72%</span></div>
+            <div class="approval-date">Sep 2025</div>
+          </div>
+          <div class="approval-bar-wrap">
+            <div class="approval-bar dimmed" style="width:69%"><span>69%</span></div>
+            <div class="approval-date">Jan 2026</div>
+          </div>
+          <div class="approval-bar-wrap">
+            <div class="approval-bar dimmed" style="width:64%"><span>64%</span></div>
+            <div class="approval-date">Mar 2026</div>
+          </div>
+        </div>
+
+        <div class="approval-contrast">
+          <div class="approval-stat">
+            <div class="approval-stat-val" style="color:var(--red)">67%</div>
+            <div class="approval-stat-desc">of white evangelicals <strong>support the tariffs</strong> that nearly caused a Bible shortage</div>
+          </div>
+          <div class="approval-stat">
+            <div class="approval-stat-val" style="color:var(--cyan)">80%</div>
+            <div class="approval-stat-desc">of Americans <strong>oppose</strong> pastors endorsing candidates from the pulpit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- THE PROSPERITY GOSPEL CONNECTION -->
+      <div class="grift-section">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F4B0</span>
+          THE PROSPERITY GOSPEL &times; TARIFFS
+        </div>
+        <div class="grift-subtitle">Alternet analysis exposed the link: the same "name it and claim it" theology that sells miracle seeds for $1,000 also sells tariffs as divine economic strategy.</div>
+
+        <div class="prosperity-grid">
+          <div class="prosperity-item">
+            <div class="prosperity-role">PAULA WHITE</div>
+            <div class="prosperity-desc">Trump's faith adviser. Prosperity gospel preacher. Head of White House Faith Office.</div>
+          </div>
+          <div class="prosperity-item">
+            <div class="prosperity-role">ROBERT JEFFRESS</div>
+            <div class="prosperity-desc">Southern Baptist megachurch pastor. Called Trump "the most faith-friendly president in history."</div>
+          </div>
+          <div class="prosperity-item">
+            <div class="prosperity-role">MARK BURNS</div>
+            <div class="prosperity-desc">"Court evangelical." Career devoted to endorsing political candidates from the pulpit.</div>
+          </div>
+        </div>
+
+        <div class="grift-quote">
+          Meanwhile: some evangelicals are <strong>"quietly quitting"</strong> Trump.
+          Pastors are avoiding political sermons. Members are walking away from MAGA.
+          <span class="grift-attribution">&mdash; Axios, Oct 2025</span>
+        </div>
+      </div>
+
+      <!-- SOURCES -->
+      <div class="grift-section sources">
+        <div class="grift-header">
+          <span class="grift-icon">\U0001F4DD</span>
+          SOURCES
+        </div>
+        <div class="source-list">
+          <a href="https://www.christianitytoday.com/2025/06/trump-bible-endorsement-profit/" target="_blank">Christianity Today: Trump Made $1.3M on Bible Endorsement</a>
+          <a href="https://www.pbs.org/newshour/politics/thousands-of-trump-bibles-were-printed-in-china-as-he-campaigned-against-trade-practices" target="_blank">PBS: Trump Bibles Printed in China</a>
+          <a href="https://www.cbsnews.com/news/china-tariffs-bible-shortage-warning-if-trump-china-tariffs-on-ultra-thin-paper-happen/" target="_blank">CBS News: Bible Shortage Warning</a>
+          <a href="https://www.christianitytoday.com/2025/04/trump-bible-china-tariff-christian-publishing/" target="_blank">Christianity Today: Bibles Safe For Now</a>
+          <a href="https://en.wikipedia.org/wiki/He_Gets_Us" target="_blank">Wikipedia: He Gets Us Campaign ($430M)</a>
+          <a href="https://www.pewresearch.org/short-reads/2026/02/09/white-evangelicals-remain-among-trumps-strongest-supporters-but-theyre-less-supportive-than-a-year-ago/" target="_blank">Pew Research: Evangelical Approval Decline</a>
+          <a href="https://prri.org/spotlight/trump-favorability-declines-among-republicans-some-religious-groups/" target="_blank">PRRI: Trump Favorability Declines</a>
+          <a href="https://bjconline.org/oklahomas-regulations-trump-endorsed-bible-for-public-schools-101524/" target="_blank">BJC: Oklahoma Bible Mandate</a>
+          <a href="https://www.alternet.org/prosperity-gospel-trump-tariffs/" target="_blank">Alternet: Prosperity Gospel &times; Tariffs</a>
+          <a href="https://www.axios.com/2025/10/29/evangelicals-quietly-quitting-trump-maga" target="_blank">Axios: Evangelicals Quietly Quitting</a>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+<div class="disclaim">
     <strong>PROVENANCE &amp; DISCLAIMER</strong>
     Satirical commentary tool. TACO is a real term (Financial Times, May 2025; Deutsche Bank).
     FUCK is a composite of four FRED series. Not backtested. Not peer-reviewed. Not financial advice.
