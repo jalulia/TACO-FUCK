@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TACO FUCK INDEX</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@400;500;600;700&family=Anybody:wght@100;400;700;900&display=swap" rel="stylesheet">
+<style>
+  @keyframes glitch1 {
+    0%, 100% { clip-path: inset(0 0 95% 0); transform: translate(-3px, 0); }
+    10% { clip-path: inset(20% 0 60% 0); transform: translate(3px, 0); }
+    20% { clip-path: inset(50% 0 20% 0); transform: translate(-2px, 0); }
+    30% { clip-path: inset(80% 0 5% 0); transform: translate(4px, 0); }
+    40% { clip-path: inset(10% 0 70% 0); transform: translate(-1px, 0); }
+    50% { clip-path: inset(40% 0 30% 0); transform: translate(2px, 0); }
+    60% { clip-path: inset(60% 0 10% 0); transform: translate(-3px, 0); }
+    70% { clip-path: inset(5% 0 85% 0); transform: translate(1px, 0); }
+    80% { clip-path: inset(30% 0 40% 0); transform: translate(-4px, 0); }
+    90% { clip-path: inset(70% 0 15% 0); transform: translate(2px, 0); }
+  }
+
+  @keyframes glitch2 {
+    0%, 100% { clip-path: inset(95% 0 0 0); transform: translate(3px, 0); }
+    10% { clip-path: inset(60% 0 20% 0); transform: translate(-3px, 0); }
+    20% { clip-path: inset(20% 0 50% 0); transform: translate(2px, 0); }
+    30% { clip-path: inset(5% 0 80% 0); transform: translate(-4px, 0); }
+    40% { clip-path: inset(70% 0 10% 0); transform: translate(1px, 0); }
+    50% { clip-path: inset(30% 0 40% 0); transform: translate(-2px, 0); }
+    60% { clip-path: inset(10% 0 60% 0); transform: translate(3px, 0); }
+    70% { clip-path: inset(85% 0 5% 0); transform: translate(-1px, 0); }
+    80% { clip-path: inset(40% 0 30% 0); transform: translate(4px, 0); }
+    90% { clip-path: inset(15% 0 70% 0); transform: translate(-2px, 0); }
+  }
+
+  @keyframes scanline {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(100vh); }
+  }
+
+  @keyframes pulse-red {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,0,50,0.3); }
+    50% { box-shadow: 0 0 40px rgba(255,0,50,0.6), 0 0 80px rgba(255,0,50,0.2); }
+  }
+
+  @keyframes needle-bounce {
+    0%, 100% { transform: rotate(var(--needle-deg)); }
+    25% { transform: rotate(calc(var(--needle-deg) + 3deg)); }
+    75% { transform: rotate(calc(var(--needle-deg) - 2deg)); }
+  }
+
+  @keyframes ticker-scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  @keyframes blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes fadeSlideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+  }
+
+  :root {
+    --bg: #000000;
+    --surface: #0a0a0a;
+    --surface2: #111111;
+    --border: #1a1a1a;
+    --text: #e0e0e0;
+    --text-dim: #555;
+    --red: #ff0032;
+    --red-dim: #990020;
+    --yellow: #ffd000;
+    --yellow-dim: #997d00;
+    --cyan: #00ffcc;
+    --magenta: #ff00aa;
+    --orange: #ff6600;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    overflow-x: hidden;
+    cursor: crosshair;
+  }
+
+  /* SCANLINE */
+  .scanline {
+    position: fixed; inset: 0; z-index: 9999; pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.08) 2px,
+      rgba(0,0,0,0.08) 4px
+    );
+  }
+
+  .scanline::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 8px;
+    background: rgba(255,0,50,0.04);
+    animation: scanline 4s linear infinite;
+  }
+
+  /* NOISE */
+  .noise {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='6' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* TICKER TAPE */
+  .ticker {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--red);
+    height: 32px;
+    overflow: hidden;
+    border-bottom: 2px solid #ff3366;
+  }
+
+  .ticker-inner {
+    display: flex;
+    white-space: nowrap;
+    animation: ticker-scroll 30s linear infinite;
+    height: 100%;
+    align-items: center;
+  }
+
+  .ticker-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: #000;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 0 40px;
+  }
+
+  .ticker-text .sep { color: rgba(0,0,0,0.3); padding: 0 12px; }
+
+  /* CONTAINER */
+  .container {
+    position: relative; z-index: 1;
+    max-width: 1100px; margin: 0 auto;
+    padding: 52px 24px 80px;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    margin-bottom: 32px;
+    padding-top: 20px;
+  }
+
+  .title-wrap {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 8px;
+  }
+
+  .title {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: clamp(48px, 9vw, 100px);
+    letter-spacing: -2px;
+    line-height: 0.95;
+    position: relative;
+  }
+
+  .title .taco { color: var(--yellow); text-shadow: 0 0 30px rgba(255,208,0,0.4); }
+  .title .fuck { color: var(--red); text-shadow: 0 0 30px rgba(255,0,50,0.4); }
+
+  /* Glitch layers */
+  .title-glitch {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    font-family: 'Dela Gothic One', cursive;
+    font-size: clamp(48px, 9vw, 100px);
+    letter-spacing: -2px;
+    line-height: 0.95;
+    pointer-events: none;
+  }
+
+  .title-glitch.g1 {
+    color: var(--cyan);
+    animation: glitch1 3s infinite linear;
+    opacity: 0.7;
+  }
+
+  .title-glitch.g2 {
+    color: var(--magenta);
+    animation: glitch2 3s infinite linear;
+    animation-delay: 0.1s;
+    opacity: 0.7;
+  }
+
+  .subtitle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 12px;
+  }
+
+  .subtitle span { color: var(--yellow); }
+  .subtitle .x { color: var(--red); font-weight: 700; }
+
+  /* TABS */
+  .tab-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 40px;
+    border: 1px solid var(--border);
+    border-radius: 0;
+    overflow: hidden;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .tab-btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    background: var(--bg);
+    border: none;
+    padding: 12px 20px;
+    cursor: crosshair;
+    flex: 1;
+    transition: all 0.15s;
+    border-right: 1px solid var(--border);
+  }
+
+  .tab-btn:last-child { border-right: none; }
+  .tab-btn:hover { color: var(--red); background: #0d0000; }
+
+  .tab-btn.active {
+    color: #000;
+    background: var(--red);
+    text-shadow: 0 0 10px rgba(0,0,0,0.3);
+  }
+
+  .tab-content { display: none; animation: fadeSlideUp 0.3s ease; }
+  .tab-content.active { display: block; }
+
+  /* THREAT LEVEL */
+  .threat-level {
+    background: var(--surface);
+    border: 2px solid var(--red-dim);
+    padding: 32px;
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+    animation: pulse-red 3s infinite;
+  }
+
+  .threat-level::before {
+    content: 'CURRENT THREAT ASSESSMENT';
+    position: absolute;
+    top: 12px; left: 16px;
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--red);
+    font-weight: 700;
+  }
+
+  .threat-gauge {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 16px;
+  }
+
+  .threat-bars {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    height: 48px;
+    align-items: flex-end;
+  }
+
+  .threat-bar {
+    flex: 1;
+    background: #111;
+    border: 1px solid #222;
+    position: relative;
+    transition: all 0.5s;
+  }
+
+  .threat-bar.lit-green { background: #00cc44; border-color: #00ff55; box-shadow: 0 0 8px rgba(0,204,68,0.4); }
+  .threat-bar.lit-yellow { background: var(--yellow); border-color: #ffe033; box-shadow: 0 0 8px rgba(255,208,0,0.4); }
+  .threat-bar.lit-orange { background: var(--orange); border-color: #ff8833; box-shadow: 0 0 8px rgba(255,102,0,0.4); }
+  .threat-bar.lit-red { background: var(--red); border-color: #ff3366; box-shadow: 0 0 12px rgba(255,0,50,0.5); }
+
+  .threat-readout {
+    text-align: right;
+    min-width: 160px;
+  }
+
+  .threat-value {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 56px;
+    line-height: 1;
+  }
+
+  .threat-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* DEFCON LEVELS */
+  .defcon-strip {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    margin-top: 20px;
+  }
+
+  .defcon-level {
+    padding: 8px;
+    text-align: center;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    opacity: 0.25;
+    transition: all 0.3s;
+  }
+
+  .defcon-level.active { opacity: 1; }
+
+  .defcon-5 { background: #003311; color: #00ff55; border: 1px solid #005522; }
+  .defcon-4 { background: #1a1a00; color: var(--yellow); border: 1px solid #333300; }
+  .defcon-3 { background: #1a0d00; color: var(--orange); border: 1px solid #332200; }
+  .defcon-2 { background: #1a0006; color: var(--red); border: 1px solid #330011; }
+  .defcon-1 { background: #1a0006; color: #ff0044; border: 1px solid #ff0044; animation: pulse-red 1s infinite; }
+
+  .defcon-level .defcon-name { font-size: 14px; font-family: 'Anybody', sans-serif; font-weight: 900; display: block; margin-bottom: 2px; }
+
+  /* STAT CARDS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 16px;
+    position: relative;
+  }
+
+  .stat-card::before {
+    content: attr(data-label);
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .stat-val {
+    font-family: 'Anybody', sans-serif;
+    font-weight: 900;
+    font-size: 28px;
+    line-height: 1.2;
+    margin-top: 4px;
+  }
+
+  .stat-sub {
+    font-size: 9px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+
+  .stat-card.s-peak .stat-val { color: var(--red); }
+  .stat-card.s-calm .stat-val { color: #00cc44; }
+  .stat-card.s-latest .stat-val { color: var(--cyan); }
+  .stat-card.s-fear .stat-val { color: var(--yellow); }
+
+  /* ACRONYM BOXES */
+  .acronyms {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-bottom: 32px;
+  }
+
+  .acro-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 24px;
+  }
+
+  .acro-title {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 28px;
+    margin-bottom: 4px;
+  }
+
+  .acro-box.taco .acro-title { color: var(--yellow); }
+  .acro-box.fuck .acro-title { color: var(--red); }
+
+  .acro-origin {
+    font-size: 9px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .ltr {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .ltr-char {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 18px;
+    width: 22px;
+    flex-shrink: 0;
+  }
+
+  .taco .ltr-char { color: var(--yellow); }
+  .fuck .ltr:nth-child(1) .ltr-char { color: var(--red); }
+  .fuck .ltr:nth-child(2) .ltr-char { color: var(--orange); }
+  .fuck .ltr:nth-child(3) .ltr-char { color: var(--magenta); }
+  .fuck .ltr:nth-child(4) .ltr-char { color: #ff0066; }
+
+  .ltr-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+
+  .ltr-desc strong { color: var(--text); font-weight: 600; }
+
+  /* CHART PANELS */
+  .chart-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+    margin-bottom: 2px;
+    position: relative;
+  }
+
+  .chart-panel::before {
+    content: attr(data-title);
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .chart-panel .chart-sub {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+  }
+
+  .legend-row {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    margin: 8px 0 12px;
+  }
+
+  .lg {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 9px; color: var(--text-dim); letter-spacing: 0.5px;
+  }
+
+  .lg-dot { width: 6px; height: 6px; }
+
+  .chart-wrap { position: relative; height: 300px; }
+
+  /* EXPLAINER TAB */
+  .exp-page { max-width: 700px; margin: 0 auto; }
+
+  .exp-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    padding: 28px;
+    margin-bottom: 2px;
+  }
+
+  .exp-block h3 {
+    font-family: 'Dela Gothic One', cursive;
+    font-size: 18px;
+    color: var(--red);
+    margin-bottom: 14px;
+  }
+
+  .exp-block p {
+    font-size: 14px;
+    color: var(--text-dim);
+    line-height: 1.9;
+    margin-bottom: 12px;
+  }
+
+  .exp-block p:last-child { margin-bottom: 0; }
+  .exp-block strong { color: var(--text); font-weight: 600; }
+
+  .exp-callout {
+    background: #0a0000;
+    border: 1px solid var(--red-dim);
+    padding: 20px 24px;
+    margin: 16px 0;
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .exp-callout .q { color: var(--red); font-family: 'Dela Gothic One', cursive; font-size: 14px; display: block; margin-bottom: 4px; }
+
+  .timeline { margin: 12px 0; }
+
+  .evt {
+    display: flex; gap: 12px; align-items: baseline;
+    padding: 10px 0;
+    border-bottom: 1px solid #111;
+    font-size: 12px;
+  }
+
+  .evt-date {
+    font-size: 10px;
+    color: var(--yellow);
+    min-width: 90px;
+    font-weight: 600;
+  }
+
+  .evt-label { color: var(--text-dim); flex: 1; }
+
+  .evt-score {
+    font-weight: 700;
+    min-width: 50px;
+    text-align: right;
+  }
+
+  .evt-score.hot { color: var(--red); }
+  .evt-score.warm { color: var(--orange); }
+  .evt-score.cool { color: #00cc44; }
+
+  .source-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 11px;
+  }
+
+  .source-table th, .source-table td {
+    padding: 6px 10px;
+    text-align: left;
+    border-bottom: 1px solid #111;
+  }
+
+  .source-table th {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    font-weight: 700;
+  }
+
+  .source-table td { color: var(--text-dim); }
+  .source-table td:first-child { color: var(--text); }
+
+  /* DATA TAB */
+  .data-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+
+  .data-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .data-head-title {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+
+  .data-toggle {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 9px;
+    background: #111;
+    border: 1px solid #222;
+    color: var(--text-dim);
+    padding: 4px 10px;
+    cursor: crosshair;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .data-toggle:hover { border-color: var(--red); color: var(--red); }
+
+  .data-scroll { max-height: 500px; overflow-y: auto; }
+
+  .dtable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10px;
+  }
+
+  .dtable th {
+    position: sticky; top: 0;
+    background: #111;
+    padding: 6px 10px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid #222;
+  }
+
+  .dtable th:first-child { text-align: left; }
+
+  .dtable td {
+    padding: 4px 10px;
+    text-align: right;
+    border-bottom: 1px solid #0d0d0d;
+    color: #444;
+  }
+
+  .dtable td:first-child { text-align: left; color: var(--text-dim); }
+  .dtable tr:hover td { background: #0a0000; }
+
+  .dtable .hot { color: var(--red) !important; font-weight: 700; }
+  .dtable .warm { color: var(--orange) !important; }
+  .dtable .cool { color: #00cc44 !important; }
+
+  /* DISCLAIMER */
+  .disclaim {
+    border: 1px solid #222;
+    border-top: 2px solid var(--yellow);
+    padding: 20px;
+    margin-top: 40px;
+    font-size: 11px;
+    color: #333;
+    line-height: 1.7;
+  }
+
+  .disclaim strong {
+    display: block;
+    font-size: 8px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--yellow-dim);
+    margin-bottom: 6px;
+  }
+
+  .blink { animation: blink 1s step-end infinite; }
+
+  @media (max-width: 700px) {
+    .stats { grid-template-columns: repeat(2, 1fr); }
+    .acronyms { grid-template-columns: 1fr; }
+    .threat-gauge { flex-direction: column; }
+    .defcon-strip { grid-template-columns: repeat(5, 1fr); font-size: 7px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scanline"></div>
+<div class="noise"></div>
+
+<!-- TICKER TAPE -->
+<div class="ticker">
+  <div class="ticker-inner" id="ticker"></div>
+</div>
+
+<div class="container">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="title-wrap">
+      <div class="title"><span class="taco">TACO</span> <span class="fuck">FUCK</span></div>
+      <div class="title-glitch g1" aria-hidden="true">TACO FUCK</div>
+      <div class="title-glitch g2" aria-hidden="true">TACO FUCK</div>
+    </div>
+    <div class="subtitle">
+      <span>trump always chickens out</span>
+      <span class="x"> &times; </span>
+      fear &middot; unpredictability &middot; consumer collapse &middot; khaos
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('dashboard',this)">DASHBOARD</button>
+    <button class="tab-btn" onclick="switchTab('explainer',this)">WTF IS THIS</button>
+    <button class="tab-btn" onclick="switchTab('data',this)">RAW DATA</button>
+  </div>
+
+  <!-- ════════ DASHBOARD ════════ -->
+  <div id="tab-dashboard" class="tab-content active">
+
+    <!-- THREAT LEVEL -->
+    <div class="threat-level" id="threat-level">
+      <div class="threat-gauge">
+        <div class="threat-bars" id="threat-bars"></div>
+        <div class="threat-readout">
+          <div class="threat-value" id="threat-value">--</div>
+          <div class="threat-label" id="threat-label">LOADING...</div>
+        </div>
+      </div>
+      <div class="defcon-strip" id="defcon-strip">
+        <div class="defcon-level defcon-5"><span class="defcon-name">5</span>VIBES OK</div>
+        <div class="defcon-level defcon-4"><span class="defcon-name">4</span>UNEASY</div>
+        <div class="defcon-level defcon-3"><span class="defcon-name">3</span>SWEATING</div>
+        <div class="defcon-level defcon-2"><span class="defcon-name">2</span>OH SHIT</div>
+        <div class="defcon-level defcon-1"><span class="defcon-name">1</span>TACO TIME</div>
+      </div>
+    </div>
+
+    <div class="acronyms">
+      <div class="acro-box taco">
+        <div class="acro-title">TACO</div>
+        <div class="acro-origin">FT / Robert Armstrong / May 2025 / Deutsche Bank index</div>
+        <div class="ltr"><span class="ltr-char">T</span><span class="ltr-desc"><strong>Trump</strong></span></div>
+        <div class="ltr"><span class="ltr-char">A</span><span class="ltr-desc"><strong>Always</strong></span></div>
+        <div class="ltr"><span class="ltr-char">C</span><span class="ltr-desc"><strong>Chickens</strong></span></div>
+        <div class="ltr"><span class="ltr-char">O</span><span class="ltr-desc"><strong>Out</strong> &mdash; S&P drawdowns = reversal pressure</span></div>
+      </div>
+      <div class="acro-box fuck">
+        <div class="acro-title">FUCK</div>
+        <div class="acro-origin">The chaos while you wait for the taco</div>
+        <div class="ltr"><span class="ltr-char">F</span><span class="ltr-desc"><strong>Fear</strong> &mdash; VIX. Hit 52 on Liberation Day.</span></div>
+        <div class="ltr"><span class="ltr-char">U</span><span class="ltr-desc"><strong>Unpredictability</strong> &mdash; yield curve whiplash</span></div>
+        <div class="ltr"><span class="ltr-char">C</span><span class="ltr-desc"><strong>Consumer Collapse</strong> &mdash; Michigan sentiment (inverted)</span></div>
+        <div class="ltr"><span class="ltr-char">K</span><span class="ltr-desc"><strong>Khaos</strong> &mdash; high-yield credit spreads</span></div>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+
+    <div class="chart-panel" data-title="TACO FUCK INDEX">
+      <div class="chart-sub">When chaos + reversal pressure both peak, something breaks or reverses</div>
+      <div class="legend-row">
+        <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>TACO FUCK</div>
+        <div class="lg"><div class="lg-dot" style="background:var(--yellow)"></div>TACO pressure</div>
+      </div>
+      <div class="chart-wrap"><canvas id="mainChart"></canvas></div>
+    </div>
+
+    <div class="chart-panel" data-title="FUCK COMPONENTS // THE FOUR HORSEMEN">
+      <div class="chart-sub">Each line is a z-scored real data series from the Federal Reserve</div>
+      <div class="legend-row">
+        <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>Fear</div>
+        <div class="lg"><div class="lg-dot" style="background:var(--orange)"></div>Unpredictability</div>
+        <div class="lg"><div class="lg-dot" style="background:var(--magenta)"></div>Consumer</div>
+        <div class="lg"><div class="lg-dot" style="background:#ff0066"></div>Khaos</div>
+      </div>
+      <div class="chart-wrap"><canvas id="fuckChart"></canvas></div>
+    </div>
+
+    <div class="chart-panel" data-title="RAW MARKET DATA">
+      <div class="chart-sub">VIX (left) vs S&P 500 (right) &mdash; the actual numbers</div>
+      <div class="legend-row">
+        <div class="lg"><div class="lg-dot" style="background:var(--red)"></div>VIX</div>
+        <div class="lg"><div class="lg-dot" style="background:var(--cyan)"></div>S&P 500</div>
+      </div>
+      <div class="chart-wrap"><canvas id="rawChart"></canvas></div>
+    </div>
+
+  </div>
+
+  <!-- ════════ EXPLAINER ════════ -->
+  <div id="tab-explainer" class="tab-content">
+    <div class="exp-page">
+
+      <div class="exp-block">
+        <h3>OK SO WHAT AM I LOOKING AT</h3>
+        <p>Two questions, one index:</p>
+        <div class="exp-callout">
+          <span class="q">FUCK:</span> How bad is it right now?
+        </div>
+        <div class="exp-callout">
+          <span class="q">TACO:</span> Is it bad enough that he'll reverse course?
+        </div>
+        <p>When both are high, you're at <strong>peak TACO FUCK</strong>: maximum chaos AND maximum pressure for a U-turn. Historically, that's when the reversal comes.</p>
+      </div>
+
+      <div class="exp-block">
+        <h3>WAIT, TACO IS A REAL THING?</h3>
+        <p><strong>"Trump Always Chickens Out"</strong> was coined by Robert Armstrong of the Financial Times in May 2025. It describes a pattern: Trump announces something aggressive, markets tank, then he walks it back.</p>
+        <p>Traders started betting on this cycle &mdash; buying the dip, selling the bounce. It became the <strong>"TACO trade."</strong> Deutsche Bank built a formal <strong>Pressure Index</strong> (by Maximilian Uleer) to predict when the next TACO would come.</p>
+        <p>Trump was asked about it at a press conference. He called it a <strong>"nasty question."</strong></p>
+      </div>
+
+      <div class="exp-block">
+        <h3>AND THE FUCK PART?</h3>
+        <p><strong style="color:var(--red)">F = Fear.</strong> The VIX. Normal is 12&ndash;18. It hit <strong>52</strong> during Liberation Day.</p>
+        <p><strong style="color:var(--orange)">U = Unpredictability.</strong> How wildly bonds are swinging. When this is high, nobody knows what's coming next.</p>
+        <p><strong style="color:var(--magenta)">C = Consumer Collapse.</strong> Michigan Consumer Sentiment, flipped. When regular people feel terrible, C goes up.</p>
+        <p><strong style="color:#ff0066">K = Khaos.</strong> High-yield credit spreads. When lenders think companies might default. The K is intentional.</p>
+        <p>Each gets z-scored and averaged. One number: <strong>how fucked are things?</strong></p>
+      </div>
+
+      <div class="exp-block">
+        <h3>THE STORY</h3>
+        <div class="timeline" id="timeline-exp"></div>
+      </div>
+
+      <div class="exp-block">
+        <h3>IS THIS REAL?</h3>
+        <p>The <strong>data is 100% real</strong> &mdash; every number from the Federal Reserve's free database. The TACO concept is real (FT, Deutsche Bank). The FUCK backronym is ours. The weighting is arbitrary. It's not backtested.</p>
+        <p>Think of it as: the <em>data</em> is real, the <em>framework</em> is illustrative, the <em>name</em> is perfect.</p>
+      </div>
+
+      <div class="exp-block">
+        <h3>ORIGIN STORY</h3>
+        <p>Julia asked DeepSeek to build a "volatility-rhetoric coupling index." DeepSeek produced an official-looking formula called the VRCI &mdash; proper notation, working code. <strong>It was completely made up.</strong></p>
+        <p>The TACO FUCK Index is the response: instead of a fake formula with fake data, a <strong>satirical framework with real data</strong>. Every number actually happened.</p>
+      </div>
+
+      <div class="exp-block">
+        <h3>DATA SOURCES</h3>
+        <p>All free. All public. All from <strong>FRED</strong> (Federal Reserve Economic Data).</p>
+        <table class="source-table">
+          <thead><tr><th>Component</th><th>FRED Series</th><th>Measures</th></tr></thead>
+          <tbody>
+            <tr><td>VIX</td><td>VIXCLS</td><td>30-day implied equity volatility</td></tr>
+            <tr><td>Yield Curve</td><td>T10Y2Y</td><td>10yr minus 2yr Treasury spread</td></tr>
+            <tr><td>Sentiment</td><td>UMCSENT</td><td>Michigan consumer survey (monthly)</td></tr>
+            <tr><td>HY Spread</td><td>BAMLH0A0HYM2</td><td>ICE BofA HY option-adjusted spread</td></tr>
+            <tr><td>S&P 500</td><td>SP500</td><td>US large-cap benchmark</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="exp-block">
+        <h3>CREDITS</h3>
+        <p><strong>TACO:</strong> Robert Armstrong, Financial Times. Deutsche Bank Pressure Index by Maximilian Uleer.</p>
+        <p><strong>FUCK:</strong> Julia, with Claude (Anthropic) and DeepSeek.</p>
+        <p><strong>Inspired by:</strong> An AI-generated formula that turned out to be completely fabricated. This one uses real data.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════════ DATA TAB ════════ -->
+  <div id="tab-data" class="tab-content">
+    <div class="data-panel">
+      <div class="data-head">
+        <span class="data-head-title">FULL DATASET &mdash; JAN&ndash;DEC 2025</span>
+        <button class="data-toggle" onclick="toggleTable()">SHOW ALL</button>
+      </div>
+      <div class="data-scroll">
+        <table class="dtable">
+          <thead>
+            <tr>
+              <th>Date</th><th>VIX</th><th>S&P</th><th>Sent.</th><th>HY</th>
+              <th>F</th><th>U</th><th>C</th><th>K</th><th>FUCK</th><th>TACO</th><th>INDEX</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="disclaim">
+    <strong>PROVENANCE &amp; DISCLAIMER</strong>
+    Satirical commentary tool. TACO is a real term (Financial Times, May 2025; Deutsche Bank).
+    FUCK is a composite of four FRED series. Not backtested. Not peer-reviewed. Not financial advice.
+    Do not trade on this. The name is the best part.
+  </div>
+
+</div>
+
+<script>
+const DATA = [{"date":"2025-01-02","vix":17.9,"t10y2y":0.32,"umcsent":71.8,"hy_spread":2.88,"sp500":5868.6,"F":0.18,"U":-0.76,"C":-0.68,"K":0.77,"FUCK":-0.12,"taco_pressure":2.45,"TACO_FUCK":1.16},{"date":"2025-01-03","vix":16.1,"t10y2y":0.32,"umcsent":71.8,"hy_spread":2.81,"sp500":5942.5,"F":-0.35,"U":-1.17,"C":-0.65,"K":0.2,"FUCK":-0.49,"taco_pressure":2.07,"TACO_FUCK":0.79},{"date":"2025-01-06","vix":16.0,"t10y2y":0.34,"umcsent":71.8,"hy_spread":2.76,"sp500":5975.4,"F":-0.35,"U":-0.33,"C":-0.62,"K":-0.2,"FUCK":-0.37,"taco_pressure":1.65,"TACO_FUCK":0.64},{"date":"2025-01-07","vix":17.8,"t10y2y":0.37,"umcsent":71.8,"hy_spread":2.79,"sp500":5909.0,"F":0.23,"U":0.09,"C":-0.6,"K":0.09,"FUCK":-0.05,"taco_pressure":2.17,"TACO_FUCK":1.06},{"date":"2025-01-08","vix":17.7,"t10y2y":0.39,"umcsent":71.8,"hy_spread":2.84,"sp500":5918.2,"F":0.21,"U":-0.34,"C":-0.57,"K":0.55,"FUCK":-0.04,"taco_pressure":1.75,"TACO_FUCK":0.85},{"date":"2025-01-10","vix":19.5,"t10y2y":0.37,"umcsent":71.8,"hy_spread":2.81,"sp500":5827.0,"F":0.81,"U":-0.33,"C":-0.55,"K":0.32,"FUCK":0.06,"taco_pressure":2.17,"TACO_FUCK":1.12},{"date":"2025-01-13","vix":19.2,"t10y2y":0.39,"umcsent":71.8,"hy_spread":2.85,"sp500":5836.2,"F":0.71,"U":-0.33,"C":-0.52,"K":0.72,"FUCK":0.15,"taco_pressure":2.3,"TACO_FUCK":1.22},{"date":"2025-01-14","vix":18.7,"t10y2y":0.41,"umcsent":71.8,"hy_spread":2.8,"sp500":5842.9,"F":0.57,"U":-0.31,"C":-0.5,"K":0.28,"FUCK":0.01,"taco_pressure":1.93,"TACO_FUCK":0.97},{"date":"2025-01-15","vix":16.1,"t10y2y":0.39,"umcsent":71.8,"hy_spread":2.72,"sp500":5949.9,"F":-0.26,"U":-0.32,"C":-0.47,"K":-0.46,"FUCK":-0.38,"taco_pressure":1.16,"TACO_FUCK":0.39},{"date":"2025-01-16","vix":16.6,"t10y2y":0.38,"umcsent":71.8,"hy_spread":2.73,"sp500":5937.3,"F":-0.09,"U":-0.73,"C":-0.44,"K":-0.34,"FUCK":-0.4,"taco_pressure":1.35,"TACO_FUCK":0.47},{"date":"2025-01-17","vix":16.0,"t10y2y":0.34,"umcsent":71.8,"hy_spread":2.64,"sp500":5996.7,"F":-0.29,"U":0.55,"C":-0.42,"K":-1.18,"FUCK":-0.33,"taco_pressure":0.77,"TACO_FUCK":0.22},{"date":"2025-01-21","vix":15.1,"t10y2y":0.28,"umcsent":71.8,"hy_spread":2.61,"sp500":6049.2,"F":-0.57,"U":1.39,"C":-0.39,"K":-1.42,"FUCK":-0.25,"taco_pressure":-0.83,"TACO_FUCK":-0.54},{"date":"2025-01-22","vix":15.1,"t10y2y":0.31,"umcsent":71.8,"hy_spread":2.59,"sp500":6086.4,"F":-0.54,"U":0.07,"C":-0.36,"K":-1.56,"FUCK":-0.6,"taco_pressure":-1.11,"TACO_FUCK":-0.85},{"date":"2025-01-23","vix":15.0,"t10y2y":0.36,"umcsent":71.8,"hy_spread":2.61,"sp500":6118.7,"F":-0.54,"U":0.91,"C":-0.33,"K":-1.34,"FUCK":-0.32,"taco_pressure":-0.86,"TACO_FUCK":-0.59},{"date":"2025-01-24","vix":14.8,"t10y2y":0.36,"umcsent":71.8,"hy_spread":2.6,"sp500":6101.2,"F":-0.58,"U":-1.24,"C":-0.3,"K":-1.4,"FUCK":-0.88,"taco_pressure":-0.44,"TACO_FUCK":-0.66},{"date":"2025-01-27","vix":17.9,"t10y2y":0.36,"umcsent":71.8,"hy_spread":2.66,"sp500":6012.3,"F":0.45,"U":-1.24,"C":-0.27,"K":-0.77,"FUCK":-0.46,"taco_pressure":0.6,"TACO_FUCK":0.07},{"date":"2025-01-28","vix":16.4,"t10y2y":0.36,"umcsent":71.8,"hy_spread":2.66,"sp500":6067.7,"F":-0.03,"U":-1.21,"C":-0.23,"K":-0.75,"FUCK":-0.55,"taco_pressure":0.2,"TACO_FUCK":-0.18},{"date":"2025-01-29","vix":16.6,"t10y2y":0.34,"umcsent":71.8,"hy_spread":2.68,"sp500":6039.3,"F":0.04,"U":-0.37,"C":-0.18,"K":-0.52,"FUCK":-0.26,"taco_pressure":-0.06,"TACO_FUCK":-0.16},{"date":"2025-01-30","vix":15.8,"t10y2y":0.34,"umcsent":71.8,"hy_spread":2.67,"sp500":6071.2,"F":-0.19,"U":-1.19,"C":-0.13,"K":-0.6,"FUCK":-0.53,"taco_pressure":-0.71,"TACO_FUCK":-0.62},{"date":"2025-04-01","vix":21.8,"t10y2y":0.3,"umcsent":52.2,"hy_spread":3.5,"sp500":5633.1,"F":0.95,"U":0.76,"C":7.62,"K":2.34,"FUCK":2.92,"taco_pressure":0.19,"TACO_FUCK":1.55},{"date":"2025-04-02","vix":21.5,"t10y2y":0.29,"umcsent":52.2,"hy_spread":3.42,"sp500":5671.0,"F":0.84,"U":-0.93,"C":5.34,"K":1.93,"FUCK":1.8,"taco_pressure":0.3,"TACO_FUCK":1.05},{"date":"2025-04-03","vix":30.0,"t10y2y":0.35,"umcsent":52.2,"hy_spread":4.01,"sp500":5396.5,"F":3.12,"U":1.79,"C":4.32,"K":3.57,"FUCK":3.2,"taco_pressure":1.08,"TACO_FUCK":2.14},{"date":"2025-04-04","vix":45.3,"t10y2y":0.33,"umcsent":52.2,"hy_spread":4.45,"sp500":5074.1,"F":5.28,"U":-0.38,"C":3.71,"K":4.14,"FUCK":3.19,"taco_pressure":2.51,"TACO_FUCK":2.85},{"date":"2025-04-07","vix":47.0,"t10y2y":0.42,"umcsent":52.2,"hy_spread":4.61,"sp500":5062.2,"F":4.47,"U":3.09,"C":3.29,"K":3.87,"FUCK":3.68,"taco_pressure":1.86,"TACO_FUCK":2.77},{"date":"2025-04-08","vix":52.3,"t10y2y":0.55,"umcsent":52.2,"hy_spread":4.57,"sp500":4982.8,"F":4.33,"U":4.18,"C":2.97,"K":3.34,"FUCK":3.71,"taco_pressure":1.95,"TACO_FUCK":2.83},{"date":"2025-04-09","vix":33.6,"t10y2y":0.43,"umcsent":52.2,"hy_spread":4.37,"sp500":5456.9,"F":1.71,"U":3.33,"C":2.73,"K":2.68,"FUCK":2.61,"taco_pressure":0.07,"TACO_FUCK":1.34},{"date":"2025-04-10","vix":40.7,"t10y2y":0.56,"umcsent":52.2,"hy_spread":4.42,"sp500":5268.0,"F":2.46,"U":3.28,"C":2.53,"K":2.57,"FUCK":2.71,"taco_pressure":0.54,"TACO_FUCK":1.63},{"date":"2025-04-11","vix":37.6,"t10y2y":0.52,"umcsent":52.2,"hy_spread":4.26,"sp500":5363.4,"F":1.96,"U":0.21,"C":2.36,"K":2.14,"FUCK":1.67,"taco_pressure":0.6,"TACO_FUCK":1.13},{"date":"2025-04-14","vix":30.9,"t10y2y":0.54,"umcsent":52.2,"hy_spread":4.14,"sp500":5406.0,"F":1.11,"U":-0.48,"C":2.22,"K":1.83,"FUCK":1.17,"taco_pressure":0.55,"TACO_FUCK":0.86},{"date":"2025-04-15","vix":30.1,"t10y2y":0.51,"umcsent":52.2,"hy_spread":4.09,"sp500":5396.6,"F":0.98,"U":-0.13,"C":2.09,"K":1.67,"FUCK":1.15,"taco_pressure":0.34,"TACO_FUCK":0.75},{"date":"2025-04-16","vix":32.6,"t10y2y":0.52,"umcsent":52.2,"hy_spread":4.16,"sp500":5275.7,"F":1.24,"U":-0.79,"C":1.98,"K":1.71,"FUCK":1.04,"taco_pressure":1.04,"TACO_FUCK":1.04},{"date":"2025-04-17","vix":29.6,"t10y2y":0.53,"umcsent":52.2,"hy_spread":4.02,"sp500":5282.7,"F":0.86,"U":-0.77,"C":1.89,"K":1.42,"FUCK":0.85,"taco_pressure":0.94,"TACO_FUCK":0.89},{"date":"2025-04-21","vix":33.8,"t10y2y":0.67,"umcsent":52.2,"hy_spread":4.16,"sp500":5158.2,"F":1.31,"U":3.27,"C":1.8,"K":1.59,"FUCK":1.99,"taco_pressure":1.43,"TACO_FUCK":1.71},{"date":"2025-04-22","vix":30.6,"t10y2y":0.65,"umcsent":52.2,"hy_spread":3.99,"sp500":5287.8,"F":0.89,"U":-0.45,"C":1.72,"K":1.26,"FUCK":0.85,"taco_pressure":1.23,"TACO_FUCK":1.04},{"date":"2025-04-23","vix":28.4,"t10y2y":0.59,"umcsent":52.2,"hy_spread":3.75,"sp500":5375.9,"F":0.62,"U":0.77,"C":1.64,"K":0.83,"FUCK":0.97,"taco_pressure":0.87,"TACO_FUCK":0.92},{"date":"2025-04-24","vix":26.5,"t10y2y":0.55,"umcsent":52.2,"hy_spread":3.73,"sp500":5484.8,"F":0.37,"U":0.12,"C":1.58,"K":0.77,"FUCK":0.71,"taco_pressure":0.16,"TACO_FUCK":0.43},{"date":"2025-04-25","vix":24.8,"t10y2y":0.55,"umcsent":52.2,"hy_spread":3.67,"sp500":5525.2,"F":0.16,"U":-1.12,"C":1.51,"K":0.65,"FUCK":0.3,"taco_pressure":-0.11,"TACO_FUCK":0.1},{"date":"2025-04-28","vix":25.2,"t10y2y":0.56,"umcsent":52.2,"hy_spread":3.73,"sp500":5528.8,"F":0.18,"U":-0.82,"C":1.46,"K":0.72,"FUCK":0.38,"taco_pressure":-0.62,"TACO_FUCK":-0.12},{"date":"2025-04-29","vix":24.2,"t10y2y":0.54,"umcsent":52.2,"hy_spread":3.74,"sp500":5560.8,"F":0.04,"U":-0.5,"C":1.4,"K":0.71,"FUCK":0.41,"taco_pressure":-0.65,"TACO_FUCK":-0.12},{"date":"2025-04-30","vix":24.7,"t10y2y":0.57,"umcsent":52.2,"hy_spread":3.94,"sp500":5569.1,"F":0.09,"U":-0.17,"C":1.35,"K":1.02,"FUCK":0.57,"taco_pressure":-0.61,"TACO_FUCK":-0.02},{"date":"2025-05-01","vix":24.6,"t10y2y":0.55,"umcsent":52.2,"hy_spread":3.78,"sp500":5604.1,"F":0.07,"U":-0.48,"C":1.3,"K":0.72,"FUCK":0.4,"taco_pressure":-0.62,"TACO_FUCK":-0.11},{"date":"2025-05-02","vix":22.7,"t10y2y":0.5,"umcsent":52.2,"hy_spread":3.6,"sp500":5686.7,"F":-0.18,"U":0.48,"C":1.26,"K":0.39,"FUCK":0.49,"taco_pressure":-2.21,"TACO_FUCK":-0.86},{"date":"2025-05-05","vix":23.6,"t10y2y":0.53,"umcsent":52.2,"hy_spread":3.6,"sp500":5650.4,"F":-0.08,"U":-0.17,"C":1.21,"K":0.37,"FUCK":0.33,"taco_pressure":-3.36,"TACO_FUCK":-1.51},{"date":"2025-05-06","vix":24.8,"t10y2y":0.52,"umcsent":52.2,"hy_spread":3.66,"sp500":5606.9,"F":0.04,"U":-0.79,"C":1.17,"K":0.45,"FUCK":0.22,"taco_pressure":-2.97,"TACO_FUCK":-1.38},{"date":"2025-05-07","vix":23.6,"t10y2y":0.48,"umcsent":52.2,"hy_spread":3.67,"sp500":5631.3,"F":-0.13,"U":0.16,"C":1.13,"K":0.45,"FUCK":0.4,"taco_pressure":-3.17,"TACO_FUCK":-1.39},{"date":"2025-05-08","vix":22.5,"t10y2y":0.47,"umcsent":52.2,"hy_spread":3.51,"sp500":5663.9,"F":-0.28,"U":-0.78,"C":1.1,"K":0.14,"FUCK":0.04,"taco_pressure":-1.36,"TACO_FUCK":-0.66},{"date":"2025-05-09","vix":21.9,"t10y2y":0.49,"umcsent":52.2,"hy_spread":3.53,"sp500":5659.9,"F":-0.37,"U":-0.47,"C":1.06,"K":0.15,"FUCK":0.09,"taco_pressure":-2.02,"TACO_FUCK":-0.97},{"date":"2025-05-12","vix":18.4,"t10y2y":0.47,"umcsent":52.2,"hy_spread":3.15,"sp500":5844.2,"F":-0.84,"U":-0.46,"C":1.03,"K":-0.57,"FUCK":-0.21,"taco_pressure":-2.22,"TACO_FUCK":-1.22},{"date":"2025-05-13","vix":18.2,"t10y2y":0.47,"umcsent":52.2,"hy_spread":3.09,"sp500":5886.6,"F":-0.88,"U":-1.09,"C":0.99,"K":-0.71,"FUCK":-0.42,"taco_pressure":-2.13,"TACO_FUCK":-1.27},{"date":"2025-05-14","vix":18.6,"t10y2y":0.48,"umcsent":52.2,"hy_spread":3.1,"sp500":5892.6,"F":-0.84,"U":-0.75,"C":0.96,"K":-0.71,"FUCK":-0.34,"taco_pressure":-2.09,"TACO_FUCK":-1.21},{"date":"2025-05-15","vix":17.8,"t10y2y":0.49,"umcsent":52.2,"hy_spread":3.2,"sp500":5916.9,"F":-0.96,"U":-0.75,"C":0.93,"K":-0.55,"FUCK":-0.33,"taco_pressure":-2.45,"TACO_FUCK":-1.39},{"date":"2025-05-16","vix":17.2,"t10y2y":0.45,"umcsent":52.2,"hy_spread":3.16,"sp500":5958.4,"F":-1.04,"U":0.2,"C":0.9,"K":-0.65,"FUCK":-0.15,"taco_pressure":-2.4,"TACO_FUCK":-1.28},{"date":"2025-05-19","vix":18.1,"t10y2y":0.49,"umcsent":52.2,"hy_spread":3.21,"sp500":5963.6,"F":-0.92,"U":0.18,"C":0.87,"K":-0.58,"FUCK":-0.11,"taco_pressure":-2.63,"TACO_FUCK":-1.37},{"date":"2025-05-20","vix":18.1,"t10y2y":0.51,"umcsent":52.2,"hy_spread":3.2,"sp500":5940.5,"F":-0.92,"U":-0.45,"C":0.84,"K":-0.62,"FUCK":-0.29,"taco_pressure":-2.03,"TACO_FUCK":-1.16},{"date":"2025-05-21","vix":20.9,"t10y2y":0.58,"umcsent":52.2,"hy_spread":3.25,"sp500":5844.6,"F":-0.56,"U":1.12,"C":0.81,"K":-0.54,"FUCK":0.21,"taco_pressure":-1.46,"TACO_FUCK":-0.63},{"date":"2025-05-22","vix":20.3,"t10y2y":0.54,"umcsent":52.2,"hy_spread":3.32,"sp500":5842.0,"F":-0.64,"U":0.17,"C":0.78,"K":-0.42,"FUCK":-0.03,"taco_pressure":-1.12,"TACO_FUCK":-0.57},{"date":"2025-05-23","vix":22.3,"t10y2y":0.51,"umcsent":52.2,"hy_spread":3.4,"sp500":5802.8,"F":-0.37,"U":-0.15,"C":0.75,"K":-0.28,"FUCK":-0.01,"taco_pressure":-0.89,"TACO_FUCK":-0.45},{"date":"2025-05-27","vix":19.0,"t10y2y":0.51,"umcsent":52.2,"hy_spread":3.24,"sp500":5921.5,"F":-0.82,"U":-1.07,"C":0.73,"K":-0.64,"FUCK":-0.45,"taco_pressure":-1.14,"TACO_FUCK":-0.8},{"date":"2025-05-28","vix":19.3,"t10y2y":0.51,"umcsent":52.2,"hy_spread":3.23,"sp500":5888.6,"F":-0.76,"U":-1.04,"C":0.7,"K":-0.68,"FUCK":-0.45,"taco_pressure":-0.95,"TACO_FUCK":-0.7},{"date":"2025-05-29","vix":19.2,"t10y2y":0.51,"umcsent":52.2,"hy_spread":3.22,"sp500":5912.2,"F":-0.76,"U":-1.01,"C":0.68,"K":-0.72,"FUCK":-0.45,"taco_pressure":-0.96,"TACO_FUCK":-0.71},{"date":"2025-05-30","vix":18.6,"t10y2y":0.52,"umcsent":52.2,"hy_spread":3.31,"sp500":5911.7,"F":-0.83,"U":-0.68,"C":0.65,"K":-0.54,"FUCK":-0.35,"taco_pressure":-0.84,"TACO_FUCK":-0.6},{"date":"2025-06-02","vix":18.4,"t10y2y":0.52,"umcsent":52.2,"hy_spread":3.27,"sp500":5935.9,"F":-0.84,"U":-0.96,"C":0.62,"K":-0.65,"FUCK":-0.46,"taco_pressure":-0.67,"TACO_FUCK":-0.57},{"date":"2025-06-03","vix":17.7,"t10y2y":0.5,"umcsent":52.2,"hy_spread":3.19,"sp500":5970.4,"F":-0.91,"U":-0.36,"C":0.6,"K":-0.85,"FUCK":-0.38,"taco_pressure":-0.82,"TACO_FUCK":-0.6},{"date":"2025-06-04","vix":17.6,"t10y2y":0.5,"umcsent":52.2,"hy_spread":3.23,"sp500":5970.8,"F":-0.9,"U":-0.98,"C":0.57,"K":-0.76,"FUCK":-0.52,"taco_pressure":-0.9,"TACO_FUCK":-0.71},{"date":"2025-06-05","vix":18.5,"t10y2y":0.48,"umcsent":52.2,"hy_spread":3.18,"sp500":5939.3,"F":-0.76,"U":-0.37,"C":0.55,"K":-0.88,"FUCK":-0.37,"taco_pressure":-0.73,"TACO_FUCK":-0.55},{"date":"2025-06-06","vix":16.8,"t10y2y":0.47,"umcsent":52.2,"hy_spread":3.09,"sp500":6000.4,"F":-0.96,"U":-0.67,"C":0.52,"K":-1.08,"FUCK":-0.55,"taco_pressure":-0.77,"TACO_FUCK":-0.66},{"date":"2025-06-09","vix":17.2,"t10y2y":0.48,"umcsent":52.2,"hy_spread":3.12,"sp500":6005.9,"F":-0.89,"U":-0.66,"C":0.5,"K":-0.99,"FUCK":-0.51,"taco_pressure":-0.77,"TACO_FUCK":-0.64},{"date":"2025-06-10","vix":17.0,"t10y2y":0.46,"umcsent":52.2,"hy_spread":3.12,"sp500":6038.8,"F":-0.9,"U":-0.34,"C":0.47,"K":-0.98,"FUCK":-0.44,"taco_pressure":-0.37,"TACO_FUCK":-0.4},{"date":"2025-06-11","vix":17.3,"t10y2y":0.47,"umcsent":52.2,"hy_spread":3.12,"sp500":6022.2,"F":-0.85,"U":-0.63,"C":0.44,"K":-0.98,"FUCK":-0.5,"taco_pressure":-0.21,"TACO_FUCK":-0.35},{"date":"2025-06-12","vix":18.0,"t10y2y":0.46,"umcsent":52.2,"hy_spread":3.17,"sp500":6045.3,"F":-0.74,"U":-0.64,"C":0.42,"K":-0.86,"FUCK":-0.46,"taco_pressure":-0.22,"TACO_FUCK":-0.34},{"date":"2025-06-13","vix":20.8,"t10y2y":0.45,"umcsent":52.2,"hy_spread":3.18,"sp500":5977.0,"F":-0.39,"U":-0.64,"C":0.39,"K":-0.84,"FUCK":-0.37,"taco_pressure":0.02,"TACO_FUCK":-0.17},{"date":"2025-06-16","vix":19.1,"t10y2y":0.49,"umcsent":52.2,"hy_spread":3.1,"sp500":6033.1,"F":-0.6,"U":0.28,"C":0.36,"K":-1.01,"FUCK":-0.24,"taco_pressure":0.01,"TACO_FUCK":-0.12},{"date":"2025-06-17","vix":21.6,"t10y2y":0.45,"umcsent":52.2,"hy_spread":3.17,"sp500":5982.7,"F":-0.3,"U":0.27,"C":0.33,"K":-0.85,"FUCK":-0.14,"taco_pressure":0.16,"TACO_FUCK":0.01},{"date":"2025-06-18","vix":20.1,"t10y2y":0.44,"umcsent":52.2,"hy_spread":3.16,"sp500":5980.9,"F":-0.49,"U":-0.66,"C":0.3,"K":-0.88,"FUCK":-0.43,"taco_pressure":0.12,"TACO_FUCK":-0.16},{"date":"2025-06-20","vix":20.6,"t10y2y":0.48,"umcsent":52.2,"hy_spread":3.13,"sp500":5967.8,"F":-0.44,"U":0.27,"C":0.27,"K":-0.95,"FUCK":-0.21,"taco_pressure":-0.08,"TACO_FUCK":-0.15},{"date":"2025-06-23","vix":19.8,"t10y2y":0.5,"umcsent":52.2,"hy_spread":3.12,"sp500":6025.2,"F":-0.54,"U":-0.34,"C":0.23,"K":-0.97,"FUCK":-0.41,"taco_pressure":-0.22,"TACO_FUCK":-0.31},{"date":"2025-06-24","vix":17.5,"t10y2y":0.55,"umcsent":52.2,"hy_spread":3.06,"sp500":6092.2,"F":-0.84,"U":0.57,"C":0.18,"K":-1.09,"FUCK":-0.29,"taco_pressure":-0.47,"TACO_FUCK":-0.38},{"date":"2025-06-25","vix":16.8,"t10y2y":0.55,"umcsent":52.2,"hy_spread":3.04,"sp500":6092.2,"F":-0.91,"U":-0.94,"C":0.13,"K":-1.11,"FUCK":-0.71,"taco_pressure":-0.14,"TACO_FUCK":-0.42},{"date":"2025-07-01","vix":16.8,"t10y2y":0.48,"umcsent":61.7,"hy_spread":2.91,"sp500":6198.0,"F":-0.82,"U":0.31,"C":-7.62,"K":-1.26,"FUCK":-2.35,"taco_pressure":-0.29,"TACO_FUCK":-1.32},{"date":"2025-07-02","vix":16.6,"t10y2y":0.52,"umcsent":61.7,"hy_spread":2.88,"sp500":6227.4,"F":-0.84,"U":0.3,"C":-5.34,"K":-1.3,"FUCK":-1.79,"taco_pressure":-0.24,"TACO_FUCK":-1.02},{"date":"2025-07-03","vix":16.4,"t10y2y":0.47,"umcsent":61.7,"hy_spread":2.8,"sp500":6279.4,"F":-0.88,"U":0.64,"C":-4.32,"K":-1.46,"FUCK":-1.51,"taco_pressure":-0.35,"TACO_FUCK":-0.93},{"date":"2025-07-07","vix":17.8,"t10y2y":0.5,"umcsent":61.7,"hy_spread":2.86,"sp500":6230.0,"F":-0.72,"U":0.07,"C":-3.71,"K":-1.32,"FUCK":-1.42,"taco_pressure":-0.28,"TACO_FUCK":-0.85},{"date":"2025-07-08","vix":16.8,"t10y2y":0.52,"umcsent":61.7,"hy_spread":2.92,"sp500":6225.5,"F":-0.86,"U":-0.23,"C":-3.29,"K":-1.16,"FUCK":-1.39,"taco_pressure":-0.06,"TACO_FUCK":-0.72},{"date":"2025-07-09","vix":15.9,"t10y2y":0.48,"umcsent":61.7,"hy_spread":2.94,"sp500":6263.3,"F":-1.05,"U":0.67,"C":-2.97,"K":-1.1,"FUCK":-1.11,"taco_pressure":-0.13,"TACO_FUCK":-0.62},{"date":"2025-07-10","vix":15.8,"t10y2y":0.49,"umcsent":61.7,"hy_spread":2.92,"sp500":6280.5,"F":-1.1,"U":-0.62,"C":-2.73,"K":-1.14,"FUCK":-1.4,"taco_pressure":-0.06,"TACO_FUCK":-0.73},{"date":"2025-07-11","vix":16.4,"t10y2y":0.53,"umcsent":61.7,"hy_spread":2.97,"sp500":6259.8,"F":-0.95,"U":0.68,"C":-2.53,"K":-0.98,"FUCK":-0.95,"taco_pressure":-0.02,"TACO_FUCK":-0.48},{"date":"2025-07-14","vix":17.2,"t10y2y":0.53,"umcsent":61.7,"hy_spread":2.95,"sp500":6268.6,"F":-0.75,"U":-1.04,"C":-2.36,"K":-1.02,"FUCK":-1.29,"taco_pressure":0.05,"TACO_FUCK":-0.62},{"date":"2025-07-15","vix":17.4,"t10y2y":0.55,"umcsent":61.7,"hy_spread":2.95,"sp500":6243.8,"F":-0.69,"U":-0.18,"C":-2.22,"K":-1.01,"FUCK":-1.03,"taco_pressure":-0.06,"TACO_FUCK":-0.54},{"date":"2025-07-16","vix":17.2,"t10y2y":0.58,"umcsent":61.7,"hy_spread":3.0,"sp500":6263.7,"F":-0.73,"U":0.24,"C":-2.09,"K":-0.84,"FUCK":-0.85,"taco_pressure":0.11,"TACO_FUCK":-0.37},{"date":"2025-07-17","vix":16.5,"t10y2y":0.56,"umcsent":61.7,"hy_spread":2.91,"sp500":6297.4,"F":-0.93,"U":-0.15,"C":-1.98,"K":-1.13,"FUCK":-1.05,"taco_pressure":-0.15,"TACO_FUCK":-0.6},{"date":"2025-07-18","vix":16.4,"t10y2y":0.56,"umcsent":61.7,"hy_spread":2.93,"sp500":6296.8,"F":-0.97,"U":-1.27,"C":-1.89,"K":-1.05,"FUCK":-1.3,"taco_pressure":-0.11,"TACO_FUCK":-0.7},{"date":"2025-07-21","vix":16.6,"t10y2y":0.53,"umcsent":61.7,"hy_spread":2.89,"sp500":6305.6,"F":-0.89,"U":0.5,"C":-1.8,"K":-1.17,"FUCK":-0.84,"taco_pressure":-0.17,"TACO_FUCK":-0.5},{"date":"2025-07-22","vix":16.5,"t10y2y":0.52,"umcsent":61.7,"hy_spread":2.9,"sp500":6309.6,"F":-0.93,"U":-0.67,"C":-1.72,"K":-1.11,"FUCK":-1.11,"taco_pressure":0.12,"TACO_FUCK":-0.49},{"date":"2025-07-23","vix":15.4,"t10y2y":0.52,"umcsent":61.7,"hy_spread":2.83,"sp500":6358.9,"F":-1.32,"U":-1.27,"C":-1.64,"K":-1.33,"FUCK":-1.39,"taco_pressure":0.25,"TACO_FUCK":-0.57},{"date":"2025-07-24","vix":15.4,"t10y2y":0.52,"umcsent":61.7,"hy_spread":2.82,"sp500":6363.4,"F":-1.3,"U":-1.25,"C":-1.58,"K":-1.34,"FUCK":-1.37,"taco_pressure":0.26,"TACO_FUCK":-0.55},{"date":"2025-07-25","vix":14.9,"t10y2y":0.49,"umcsent":61.7,"hy_spread":2.84,"sp500":6388.6,"F":-1.45,"U":0.52,"C":-1.51,"K":-1.25,"FUCK":-0.92,"taco_pressure":0.42,"TACO_FUCK":-0.25},{"date":"2025-07-28","vix":15.0,"t10y2y":0.51,"umcsent":61.7,"hy_spread":2.82,"sp500":6389.8,"F":-1.4,"U":-0.06,"C":-1.46,"K":-1.35,"FUCK":-1.07,"taco_pressure":0.61,"TACO_FUCK":-0.23},{"date":"2025-07-29","vix":16.0,"t10y2y":0.48,"umcsent":61.7,"hy_spread":2.86,"sp500":6370.9,"F":-0.99,"U":0.52,"C":-1.4,"K":-1.18,"FUCK":-0.76,"taco_pressure":0.91,"TACO_FUCK":0.08},{"date":"2025-07-30","vix":15.5,"t10y2y":0.44,"umcsent":61.7,"hy_spread":2.89,"sp500":6362.9,"F":-1.18,"U":1.14,"C":-1.35,"K":-1.03,"FUCK":-0.6,"taco_pressure":0.9,"TACO_FUCK":0.15},{"date":"2025-07-31","vix":16.7,"t10y2y":0.43,"umcsent":61.7,"hy_spread":2.86,"sp500":6339.4,"F":-0.61,"U":-0.64,"C":-1.3,"K":-1.15,"FUCK":-0.93,"taco_pressure":1.14,"TACO_FUCK":0.1},{"date":"2025-08-01","vix":20.4,"t10y2y":0.54,"umcsent":58.2,"hy_spread":3.13,"sp500":6238.0,"F":1.22,"U":4.34,"C":-0.52,"K":0.25,"FUCK":1.32,"taco_pressure":1.85,"TACO_FUCK":1.58},{"date":"2025-08-04","vix":17.5,"t10y2y":0.53,"umcsent":58.2,"hy_spread":3.02,"sp500":6329.9,"F":-0.19,"U":-0.59,"C":-0.5,"K":-0.31,"FUCK":-0.4,"taco_pressure":1.12,"TACO_FUCK":0.36},{"date":"2025-08-05","vix":17.8,"t10y2y":0.5,"umcsent":58.2,"hy_spread":2.98,"sp500":6299.2,"F":0.04,"U":0.39,"C":-0.48,"K":-0.52,"FUCK":-0.15,"taco_pressure":1.23,"TACO_FUCK":0.54},{"date":"2025-08-06","vix":16.8,"t10y2y":0.53,"umcsent":58.2,"hy_spread":2.98,"sp500":6345.1,"F":-0.56,"U":0.38,"C":-0.46,"K":-0.5,"FUCK":-0.29,"taco_pressure":1.15,"TACO_FUCK":0.43},{"date":"2025-08-07","vix":16.6,"t10y2y":0.51,"umcsent":58.2,"hy_spread":2.95,"sp500":6340.0,"F":-0.66,"U":-0.12,"C":-0.44,"K":-0.68,"FUCK":-0.48,"taco_pressure":1.23,"TACO_FUCK":0.38},{"date":"2025-08-08","vix":15.2,"t10y2y":0.51,"umcsent":58.2,"hy_spread":2.94,"sp500":6389.4,"F":-1.46,"U":-1.11,"C":-0.42,"K":-0.73,"FUCK":-0.93,"taco_pressure":0.83,"TACO_FUCK":-0.05},{"date":"2025-08-11","vix":16.2,"t10y2y":0.51,"umcsent":58.2,"hy_spread":2.94,"sp500":6373.4,"F":-0.78,"U":-1.09,"C":-0.4,"K":-0.71,"FUCK":-0.75,"taco_pressure":0.93,"TACO_FUCK":0.09},{"date":"2025-08-12","vix":14.7,"t10y2y":0.57,"umcsent":58.2,"hy_spread":2.93,"sp500":6445.8,"F":-1.61,"U":1.78,"C":-0.39,"K":-0.75,"FUCK":-0.24,"taco_pressure":0.39,"TACO_FUCK":0.07},{"date":"2025-08-13","vix":14.5,"t10y2y":0.57,"umcsent":58.2,"hy_spread":2.9,"sp500":6466.6,"F":-1.68,"U":-1.07,"C":-0.37,"K":-0.91,"FUCK":-1.01,"taco_pressure":0.36,"TACO_FUCK":-0.32},{"date":"2025-08-14","vix":14.8,"t10y2y":0.55,"umcsent":58.2,"hy_spread":2.89,"sp500":6468.5,"F":-1.43,"U":-0.1,"C":-0.35,"K":-0.95,"FUCK":-0.71,"taco_pressure":0.58,"TACO_FUCK":-0.06},{"date":"2025-08-15","vix":15.1,"t10y2y":0.58,"umcsent":58.2,"hy_spread":2.88,"sp500":6449.8,"F":-1.25,"U":0.38,"C":-0.32,"K":-0.98,"FUCK":-0.54,"taco_pressure":0.74,"TACO_FUCK":0.1},{"date":"2025-08-18","vix":15.0,"t10y2y":0.57,"umcsent":58.2,"hy_spread":2.88,"sp500":6449.2,"F":-1.27,"U":-0.56,"C":-0.3,"K":-0.95,"FUCK":-0.77,"taco_pressure":0.81,"TACO_FUCK":0.02},{"date":"2025-08-19","vix":15.6,"t10y2y":0.55,"umcsent":58.2,"hy_spread":2.9,"sp500":6411.4,"F":-0.92,"U":-0.04,"C":-0.28,"K":-0.79,"FUCK":-0.51,"taco_pressure":1.15,"TACO_FUCK":0.32},{"date":"2025-08-20","vix":15.7,"t10y2y":0.55,"umcsent":58.2,"hy_spread":2.94,"sp500":6395.8,"F":-0.85,"U":-1.03,"C":-0.26,"K":-0.49,"FUCK":-0.66,"taco_pressure":1.67,"TACO_FUCK":0.5},{"date":"2025-08-21","vix":16.6,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.95,"sp500":6370.2,"F":-0.28,"U":-0.53,"C":-0.24,"K":-0.39,"FUCK":-0.36,"taco_pressure":1.88,"TACO_FUCK":0.76},{"date":"2025-08-22","vix":14.2,"t10y2y":0.58,"umcsent":58.2,"hy_spread":2.88,"sp500":6466.9,"F":-1.67,"U":0.96,"C":-0.22,"K":-0.9,"FUCK":-0.46,"taco_pressure":1.2,"TACO_FUCK":0.37},{"date":"2025-08-25","vix":14.8,"t10y2y":0.55,"umcsent":58.2,"hy_spread":2.8,"sp500":6439.3,"F":-1.28,"U":0.43,"C":-0.2,"K":-1.48,"FUCK":-0.63,"taco_pressure":1.42,"TACO_FUCK":0.39},{"date":"2025-08-26","vix":14.6,"t10y2y":0.65,"umcsent":58.2,"hy_spread":2.78,"sp500":6465.9,"F":-1.34,"U":3.51,"C":-0.18,"K":-1.62,"FUCK":0.09,"taco_pressure":0.97,"TACO_FUCK":0.53},{"date":"2025-08-27","vix":14.8,"t10y2y":0.65,"umcsent":58.2,"hy_spread":2.78,"sp500":6481.4,"F":-1.16,"U":-1.06,"C":-0.16,"K":-1.6,"FUCK":-0.99,"taco_pressure":0.74,"TACO_FUCK":-0.13},{"date":"2025-08-28","vix":14.4,"t10y2y":0.6,"umcsent":58.2,"hy_spread":2.75,"sp500":6501.9,"F":-1.36,"U":1.19,"C":-0.13,"K":-1.79,"FUCK":-0.52,"taco_pressure":0.31,"TACO_FUCK":-0.11},{"date":"2025-08-29","vix":15.4,"t10y2y":0.64,"umcsent":58.2,"hy_spread":2.82,"sp500":6460.3,"F":-0.78,"U":0.71,"C":-0.11,"K":-1.18,"FUCK":-0.34,"taco_pressure":-0.31,"TACO_FUCK":-0.33},{"date":"2025-09-02","vix":17.2,"t10y2y":0.62,"umcsent":58.2,"hy_spread":2.92,"sp500":6415.5,"F":0.31,"U":-0.2,"C":-0.08,"K":-0.29,"FUCK":-0.07,"taco_pressure":0.99,"TACO_FUCK":0.46},{"date":"2025-09-03","vix":16.4,"t10y2y":0.61,"umcsent":58.2,"hy_spread":2.88,"sp500":6448.3,"F":-0.18,"U":-0.65,"C":-0.06,"K":-0.62,"FUCK":-0.38,"taco_pressure":0.35,"TACO_FUCK":-0.02},{"date":"2025-09-04","vix":15.3,"t10y2y":0.58,"umcsent":58.2,"hy_spread":2.84,"sp500":6502.1,"F":-0.78,"U":0.24,"C":-0.03,"K":-0.95,"FUCK":-0.38,"taco_pressure":0.25,"TACO_FUCK":-0.07},{"date":"2025-09-05","vix":15.2,"t10y2y":0.59,"umcsent":58.2,"hy_spread":2.83,"sp500":6481.5,"F":-0.83,"U":-0.66,"C":-0.0,"K":-1.01,"FUCK":-0.63,"taco_pressure":0.4,"TACO_FUCK":-0.12},{"date":"2025-09-08","vix":15.1,"t10y2y":0.56,"umcsent":58.2,"hy_spread":2.84,"sp500":6495.2,"F":-0.85,"U":0.24,"C":0.02,"K":-0.89,"FUCK":-0.37,"taco_pressure":0.76,"TACO_FUCK":0.19},{"date":"2025-09-09","vix":15.0,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.87,"sp500":6512.6,"F":-0.86,"U":-0.23,"C":0.05,"K":-0.59,"FUCK":-0.41,"taco_pressure":0.41,"TACO_FUCK":0.0},{"date":"2025-09-10","vix":15.4,"t10y2y":0.5,"umcsent":58.2,"hy_spread":2.84,"sp500":6532.0,"F":-0.66,"U":0.66,"C":0.09,"K":-0.87,"FUCK":-0.19,"taco_pressure":0.97,"TACO_FUCK":0.39},{"date":"2025-09-11","vix":14.7,"t10y2y":0.49,"umcsent":58.2,"hy_spread":2.78,"sp500":6587.5,"F":-1.03,"U":-0.68,"C":0.12,"K":-1.44,"FUCK":-0.76,"taco_pressure":0.63,"TACO_FUCK":-0.06},{"date":"2025-09-12","vix":14.8,"t10y2y":0.5,"umcsent":58.2,"hy_spread":2.79,"sp500":6584.3,"F":-1.02,"U":-0.66,"C":0.16,"K":-1.33,"FUCK":-0.71,"taco_pressure":0.71,"TACO_FUCK":0.0},{"date":"2025-09-15","vix":15.7,"t10y2y":0.51,"umcsent":58.2,"hy_spread":2.75,"sp500":6615.3,"F":-0.34,"U":-0.66,"C":0.2,"K":-1.76,"FUCK":-0.64,"taco_pressure":0.22,"TACO_FUCK":-0.21},{"date":"2025-09-16","vix":16.4,"t10y2y":0.53,"umcsent":58.2,"hy_spread":2.79,"sp500":6606.8,"F":0.23,"U":-0.19,"C":0.25,"K":-1.3,"FUCK":-0.25,"taco_pressure":0.31,"TACO_FUCK":0.03},{"date":"2025-09-17","vix":15.7,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.79,"sp500":6600.4,"F":-0.26,"U":-0.64,"C":0.3,"K":-1.29,"FUCK":-0.47,"taco_pressure":-0.04,"TACO_FUCK":-0.25},{"date":"2025-09-18","vix":15.7,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.71,"sp500":6632.0,"F":-0.26,"U":-1.06,"C":0.35,"K":-2.19,"FUCK":-0.79,"taco_pressure":-0.56,"TACO_FUCK":-0.68},{"date":"2025-09-19","vix":15.4,"t10y2y":0.57,"umcsent":58.2,"hy_spread":2.72,"sp500":6664.4,"F":-0.47,"U":0.29,"C":0.42,"K":-1.99,"FUCK":-0.44,"taco_pressure":-1.17,"TACO_FUCK":-0.8},{"date":"2025-09-22","vix":16.1,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.69,"sp500":6693.8,"F":0.14,"U":0.28,"C":0.51,"K":-2.25,"FUCK":-0.33,"taco_pressure":-0.42,"TACO_FUCK":-0.38},{"date":"2025-09-23","vix":16.6,"t10y2y":0.59,"umcsent":58.2,"hy_spread":2.71,"sp500":6656.9,"F":0.63,"U":1.17,"C":0.61,"K":-1.93,"FUCK":0.12,"taco_pressure":-0.35,"TACO_FUCK":-0.12},{"date":"2025-09-24","vix":16.2,"t10y2y":0.59,"umcsent":58.2,"hy_spread":2.7,"sp500":6638.0,"F":0.22,"U":-1.11,"C":0.75,"K":-1.95,"FUCK":-0.52,"taco_pressure":0.12,"TACO_FUCK":-0.2},{"date":"2025-09-25","vix":16.7,"t10y2y":0.54,"umcsent":58.2,"hy_spread":2.76,"sp500":6604.7,"F":0.74,"U":1.17,"C":0.73,"K":-1.22,"FUCK":0.36,"taco_pressure":0.63,"TACO_FUCK":0.49},{"date":"2025-09-26","vix":15.3,"t10y2y":0.57,"umcsent":58.2,"hy_spread":2.75,"sp500":6643.7,"F":-0.59,"U":0.27,"C":0.7,"K":-1.29,"FUCK":-0.23,"taco_pressure":0.41,"TACO_FUCK":0.09},{"date":"2025-09-29","vix":16.1,"t10y2y":0.52,"umcsent":58.2,"hy_spread":2.74,"sp500":6661.2,"F":0.19,"U":1.18,"C":0.68,"K":-1.37,"FUCK":0.17,"taco_pressure":-0.28,"TACO_FUCK":-0.06},{"date":"2025-09-30","vix":16.3,"t10y2y":0.56,"umcsent":58.2,"hy_spread":2.8,"sp500":6688.5,"F":0.37,"U":0.72,"C":0.65,"K":-0.69,"FUCK":0.26,"taco_pressure":-1.14,"TACO_FUCK":-0.44},{"date":"2025-10-01","vix":16.3,"t10y2y":0.57,"umcsent":53.6,"hy_spread":2.81,"sp500":6711.2,"F":0.39,"U":-0.65,"C":3.16,"K":-0.56,"FUCK":0.59,"taco_pressure":-1.01,"TACO_FUCK":-0.21},{"date":"2025-10-02","vix":16.6,"t10y2y":0.55,"umcsent":53.6,"hy_spread":2.81,"sp500":6715.4,"F":0.7,"U":-0.18,"C":2.91,"K":-0.54,"FUCK":0.72,"taco_pressure":-0.43,"TACO_FUCK":0.15},{"date":"2025-10-03","vix":16.6,"t10y2y":0.55,"umcsent":53.6,"hy_spread":2.8,"sp500":6715.8,"F":0.7,"U":-1.08,"C":2.7,"K":-0.63,"FUCK":0.43,"taco_pressure":-0.69,"TACO_FUCK":-0.13},{"date":"2025-10-06","vix":16.4,"t10y2y":0.58,"umcsent":53.6,"hy_spread":2.76,"sp500":6740.3,"F":0.44,"U":0.3,"C":2.53,"K":-1.04,"FUCK":0.56,"taco_pressure":-0.81,"TACO_FUCK":-0.13},{"date":"2025-10-07","vix":17.2,"t10y2y":0.57,"umcsent":53.6,"hy_spread":2.82,"sp500":6714.6,"F":1.26,"U":-0.63,"C":2.39,"K":-0.34,"FUCK":0.67,"taco_pressure":-0.32,"TACO_FUCK":0.18},{"date":"2025-10-08","vix":16.3,"t10y2y":0.55,"umcsent":53.6,"hy_spread":2.84,"sp500":6753.7,"F":0.39,"U":-0.17,"C":2.26,"K":-0.1,"FUCK":0.6,"taco_pressure":-0.56,"TACO_FUCK":0.02},{"date":"2025-10-09","vix":16.4,"t10y2y":0.54,"umcsent":53.6,"hy_spread":2.95,"sp500":6735.1,"F":0.53,"U":-0.61,"C":2.15,"K":1.19,"FUCK":0.82,"taco_pressure":0.3,"TACO_FUCK":0.56},{"date":"2025-10-10","vix":21.7,"t10y2y":0.53,"umcsent":53.6,"hy_spread":3.18,"sp500":6552.5,"F":4.49,"U":-0.6,"C":2.06,"K":3.42,"FUCK":2.34,"taco_pressure":2.3,"TACO_FUCK":2.32},{"date":"2025-10-14","vix":20.8,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.11,"sp500":6644.3,"F":3.38,"U":-0.16,"C":1.97,"K":2.52,"FUCK":1.93,"taco_pressure":1.57,"TACO_FUCK":1.75},{"date":"2025-10-15","vix":20.6,"t10y2y":0.55,"umcsent":53.6,"hy_spread":2.95,"sp500":6671.1,"F":2.96,"U":-1.05,"C":1.89,"K":0.92,"FUCK":1.18,"taco_pressure":1.14,"TACO_FUCK":1.16},{"date":"2025-10-16","vix":25.3,"t10y2y":0.58,"umcsent":53.6,"hy_spread":3.04,"sp500":6629.1,"F":4.68,"U":0.31,"C":1.83,"K":1.74,"FUCK":2.14,"taco_pressure":1.54,"TACO_FUCK":1.84},{"date":"2025-10-17","vix":20.8,"t10y2y":0.56,"umcsent":53.6,"hy_spread":3.04,"sp500":6664.0,"F":2.2,"U":-0.17,"C":1.76,"K":1.67,"FUCK":1.36,"taco_pressure":1.45,"TACO_FUCK":1.41},{"date":"2025-10-20","vix":18.2,"t10y2y":0.54,"umcsent":53.6,"hy_spread":2.99,"sp500":6735.1,"F":0.91,"U":-0.19,"C":1.71,"K":1.16,"FUCK":0.9,"taco_pressure":0.95,"TACO_FUCK":0.92},{"date":"2025-10-21","vix":17.9,"t10y2y":0.53,"umcsent":53.6,"hy_spread":2.97,"sp500":6735.4,"F":0.7,"U":-0.64,"C":1.66,"K":0.95,"FUCK":0.67,"taco_pressure":1.28,"TACO_FUCK":0.97},{"date":"2025-10-22","vix":18.6,"t10y2y":0.52,"umcsent":53.6,"hy_spread":3.01,"sp500":6699.4,"F":1.03,"U":-0.63,"C":1.62,"K":1.27,"FUCK":0.82,"taco_pressure":1.22,"TACO_FUCK":1.02},{"date":"2025-10-23","vix":17.3,"t10y2y":0.53,"umcsent":53.6,"hy_spread":2.96,"sp500":6738.4,"F":0.38,"U":-0.61,"C":1.58,"K":0.8,"FUCK":0.54,"taco_pressure":0.47,"TACO_FUCK":0.5},{"date":"2025-10-24","vix":16.4,"t10y2y":0.54,"umcsent":53.6,"hy_spread":2.88,"sp500":6791.7,"F":-0.08,"U":-0.59,"C":1.54,"K":0.08,"FUCK":0.24,"taco_pressure":-0.64,"TACO_FUCK":-0.2},{"date":"2025-10-27","vix":15.8,"t10y2y":0.53,"umcsent":53.6,"hy_spread":2.8,"sp500":6875.2,"F":-0.36,"U":-0.59,"C":1.51,"K":-0.64,"FUCK":-0.02,"taco_pressure":-1.16,"TACO_FUCK":-0.59},{"date":"2025-10-28","vix":16.4,"t10y2y":0.52,"umcsent":53.6,"hy_spread":2.82,"sp500":6890.9,"F":-0.02,"U":-0.6,"C":1.46,"K":-0.43,"FUCK":0.1,"taco_pressure":-1.11,"TACO_FUCK":-0.51},{"date":"2025-10-29","vix":16.9,"t10y2y":0.49,"umcsent":53.6,"hy_spread":2.76,"sp500":6890.6,"F":0.24,"U":0.47,"C":1.4,"K":-0.97,"FUCK":0.29,"taco_pressure":-0.72,"TACO_FUCK":-0.22},{"date":"2025-10-30","vix":16.9,"t10y2y":0.5,"umcsent":53.6,"hy_spread":2.85,"sp500":6822.3,"F":0.24,"U":-0.6,"C":1.35,"K":-0.09,"FUCK":0.23,"taco_pressure":0.47,"TACO_FUCK":0.35},{"date":"2025-10-31","vix":17.4,"t10y2y":0.51,"umcsent":53.6,"hy_spread":2.94,"sp500":6840.2,"F":0.51,"U":-0.58,"C":1.3,"K":0.79,"FUCK":0.51,"taco_pressure":0.3,"TACO_FUCK":0.4},{"date":"2025-11-03","vix":17.2,"t10y2y":0.53,"umcsent":53.6,"hy_spread":3.04,"sp500":6852.0,"F":0.37,"U":-0.04,"C":1.26,"K":1.72,"FUCK":0.83,"taco_pressure":0.17,"TACO_FUCK":0.5},{"date":"2025-11-04","vix":19.0,"t10y2y":0.52,"umcsent":53.6,"hy_spread":3.13,"sp500":6771.6,"F":1.25,"U":-0.6,"C":1.21,"K":2.43,"FUCK":1.07,"taco_pressure":1.5,"TACO_FUCK":1.29},{"date":"2025-11-05","vix":18.0,"t10y2y":0.54,"umcsent":53.6,"hy_spread":3.05,"sp500":6796.3,"F":0.73,"U":-0.06,"C":1.17,"K":1.65,"FUCK":0.87,"taco_pressure":0.84,"TACO_FUCK":0.86},{"date":"2025-11-06","vix":19.5,"t10y2y":0.54,"umcsent":53.6,"hy_spread":3.13,"sp500":6720.3,"F":1.42,"U":-1.16,"C":1.13,"K":2.24,"FUCK":0.91,"taco_pressure":2.18,"TACO_FUCK":1.54},{"date":"2025-11-07","vix":19.1,"t10y2y":0.56,"umcsent":53.6,"hy_spread":3.15,"sp500":6728.8,"F":1.18,"U":-0.03,"C":1.1,"K":2.27,"FUCK":1.13,"taco_pressure":1.76,"TACO_FUCK":1.45},{"date":"2025-11-10","vix":17.6,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.02,"sp500":6832.4,"F":0.42,"U":-0.6,"C":1.06,"K":1.17,"FUCK":0.51,"taco_pressure":-1.73,"TACO_FUCK":-0.61},{"date":"2025-11-12","vix":17.5,"t10y2y":0.52,"umcsent":53.6,"hy_spread":3.02,"sp500":6850.9,"F":0.36,"U":0.56,"C":1.03,"K":1.14,"FUCK":0.77,"taco_pressure":-0.79,"TACO_FUCK":-0.01},{"date":"2025-11-13","vix":20.0,"t10y2y":0.53,"umcsent":53.6,"hy_spread":3.09,"sp500":6737.5,"F":1.54,"U":-0.6,"C":0.99,"K":1.63,"FUCK":0.89,"taco_pressure":0.86,"TACO_FUCK":0.88},{"date":"2025-11-14","vix":19.8,"t10y2y":0.52,"umcsent":53.6,"hy_spread":3.07,"sp500":6734.1,"F":1.4,"U":-0.59,"C":0.96,"K":1.43,"FUCK":0.8,"taco_pressure":0.4,"TACO_FUCK":0.6},{"date":"2025-11-17","vix":22.4,"t10y2y":0.53,"umcsent":53.6,"hy_spread":3.13,"sp500":6672.4,"F":2.46,"U":-0.6,"C":0.93,"K":1.81,"FUCK":1.15,"taco_pressure":1.52,"TACO_FUCK":1.34},{"date":"2025-11-18","vix":24.7,"t10y2y":0.54,"umcsent":53.6,"hy_spread":3.2,"sp500":6617.3,"F":3.15,"U":-0.6,"C":0.9,"K":2.21,"FUCK":1.41,"taco_pressure":2.81,"TACO_FUCK":2.11},{"date":"2025-11-19","vix":23.7,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.17,"sp500":6642.2,"F":2.54,"U":-0.58,"C":0.87,"K":1.9,"FUCK":1.18,"taco_pressure":2.39,"TACO_FUCK":1.79},{"date":"2025-11-20","vix":26.4,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.17,"sp500":6538.8,"F":3.25,"U":-1.13,"C":0.84,"K":1.81,"FUCK":1.19,"taco_pressure":2.86,"TACO_FUCK":2.03},{"date":"2025-11-21","vix":23.4,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.19,"sp500":6603.0,"F":2.05,"U":-1.29,"C":0.81,"K":1.85,"FUCK":0.85,"taco_pressure":2.44,"TACO_FUCK":1.65},{"date":"2025-11-24","vix":20.5,"t10y2y":0.58,"umcsent":53.6,"hy_spread":3.15,"sp500":6705.1,"F":0.98,"U":0.87,"C":0.78,"K":1.53,"FUCK":1.04,"taco_pressure":1.88,"TACO_FUCK":1.46},{"date":"2025-11-25","vix":18.6,"t10y2y":0.58,"umcsent":53.6,"hy_spread":3.1,"sp500":6765.9,"F":0.26,"U":-1.32,"C":0.75,"K":1.16,"FUCK":0.21,"taco_pressure":1.97,"TACO_FUCK":1.09},{"date":"2025-11-26","vix":17.2,"t10y2y":0.55,"umcsent":53.6,"hy_spread":3.0,"sp500":6812.6,"F":-0.25,"U":0.99,"C":0.73,"K":0.5,"FUCK":0.49,"taco_pressure":1.63,"TACO_FUCK":1.06},{"date":"2025-11-28","vix":16.4,"t10y2y":0.55,"umcsent":53.6,"hy_spread":2.95,"sp500":6849.1,"F":-0.55,"U":-1.29,"C":0.7,"K":0.17,"FUCK":-0.24,"taco_pressure":1.29,"TACO_FUCK":0.52},{"date":"2025-12-01","vix":17.2,"t10y2y":0.55,"umcsent":52.9,"hy_spread":2.94,"sp500":6812.6,"F":-0.23,"U":-1.26,"C":0.99,"K":0.1,"FUCK":-0.1,"taco_pressure":0.99,"TACO_FUCK":0.45},{"date":"2025-12-02","vix":16.6,"t10y2y":0.58,"umcsent":52.9,"hy_spread":2.92,"sp500":6829.4,"F":-0.48,"U":1.01,"C":0.96,"K":-0.04,"FUCK":0.36,"taco_pressure":0.97,"TACO_FUCK":0.67},{"date":"2025-12-03","vix":16.1,"t10y2y":0.57,"umcsent":52.9,"hy_spread":2.89,"sp500":6849.7,"F":-0.67,"U":-0.5,"C":0.93,"K":-0.24,"FUCK":-0.12,"taco_pressure":0.88,"TACO_FUCK":0.38},{"date":"2025-12-04","vix":15.8,"t10y2y":0.59,"umcsent":52.9,"hy_spread":2.88,"sp500":6857.1,"F":-0.79,"U":0.27,"C":0.9,"K":-0.31,"FUCK":0.02,"taco_pressure":0.15,"TACO_FUCK":0.08},{"date":"2025-12-05","vix":15.4,"t10y2y":0.58,"umcsent":52.9,"hy_spread":2.85,"sp500":6870.4,"F":-0.93,"U":-0.48,"C":0.87,"K":-0.51,"FUCK":-0.26,"taco_pressure":0.24,"TACO_FUCK":-0.01},{"date":"2025-12-08","vix":16.7,"t10y2y":0.6,"umcsent":52.9,"hy_spread":2.89,"sp500":6846.5,"F":-0.48,"U":0.31,"C":0.85,"K":-0.25,"FUCK":0.11,"taco_pressure":-0.2,"TACO_FUCK":-0.05},{"date":"2025-12-09","vix":16.9,"t10y2y":0.57,"umcsent":52.9,"hy_spread":2.89,"sp500":6840.5,"F":-0.4,"U":1.06,"C":0.82,"K":-0.26,"FUCK":0.3,"taco_pressure":-0.08,"TACO_FUCK":0.11},{"date":"2025-12-10","vix":15.8,"t10y2y":0.59,"umcsent":52.9,"hy_spread":2.91,"sp500":6886.7,"F":-0.85,"U":0.27,"C":0.8,"K":-0.15,"FUCK":0.02,"taco_pressure":0.4,"TACO_FUCK":0.21},{"date":"2025-12-11","vix":14.8,"t10y2y":0.62,"umcsent":52.9,"hy_spread":2.88,"sp500":6901.0,"F":-1.18,"U":1.02,"C":0.77,"K":-0.36,"FUCK":0.06,"taco_pressure":0.41,"TACO_FUCK":0.24},{"date":"2025-12-12","vix":15.7,"t10y2y":0.67,"umcsent":52.9,"hy_spread":2.91,"sp500":6827.4,"F":-0.84,"U":2.4,"C":0.75,"K":-0.18,"FUCK":0.53,"taco_pressure":0.07,"TACO_FUCK":0.3},{"date":"2025-12-15","vix":16.5,"t10y2y":0.67,"umcsent":52.9,"hy_spread":2.91,"sp500":6816.5,"F":-0.56,"U":-1.24,"C":0.73,"K":-0.19,"FUCK":-0.32,"taco_pressure":0.11,"TACO_FUCK":-0.1},{"date":"2025-12-16","vix":16.5,"t10y2y":0.67,"umcsent":52.9,"hy_spread":2.98,"sp500":6800.3,"F":-0.58,"U":-1.24,"C":0.71,"K":0.26,"FUCK":-0.21,"taco_pressure":-0.3,"TACO_FUCK":-0.26},{"date":"2025-12-17","vix":17.6,"t10y2y":0.67,"umcsent":52.9,"hy_spread":2.99,"sp500":6721.4,"F":-0.16,"U":-1.2,"C":0.69,"K":0.3,"FUCK":-0.09,"taco_pressure":-0.13,"TACO_FUCK":-0.11},{"date":"2025-12-18","vix":16.9,"t10y2y":0.66,"umcsent":52.9,"hy_spread":2.95,"sp500":6774.8,"F":-0.45,"U":-0.46,"C":0.68,"K":-0.01,"FUCK":-0.06,"taco_pressure":-0.4,"TACO_FUCK":-0.23},{"date":"2025-12-19","vix":14.9,"t10y2y":0.68,"umcsent":52.9,"hy_spread":2.9,"sp500":6834.5,"F":-1.18,"U":0.32,"C":0.66,"K":-0.41,"FUCK":-0.15,"taco_pressure":-1.86,"TACO_FUCK":-1.01},{"date":"2025-12-22","vix":14.1,"t10y2y":0.73,"umcsent":52.9,"hy_spread":2.88,"sp500":6878.5,"F":-1.46,"U":2.45,"C":0.66,"K":-0.6,"FUCK":0.26,"taco_pressure":-1.62,"TACO_FUCK":-0.68},{"date":"2025-12-23","vix":14.0,"t10y2y":0.7,"umcsent":52.9,"hy_spread":2.83,"sp500":6909.8,"F":-1.45,"U":1.05,"C":0.66,"K":-1.01,"FUCK":-0.19,"taco_pressure":-0.95,"TACO_FUCK":-0.57},{"date":"2025-12-24","vix":13.5,"t10y2y":0.68,"umcsent":52.9,"hy_spread":2.84,"sp500":6932.0,"F":-1.61,"U":0.3,"C":0.69,"K":-0.96,"FUCK":-0.39,"taco_pressure":-0.61,"TACO_FUCK":-0.5},{"date":"2025-12-26","vix":13.6,"t10y2y":0.68,"umcsent":52.9,"hy_spread":2.86,"sp500":6929.9,"F":-1.52,"U":-1.25,"C":0.79,"K":-0.83,"FUCK":-0.7,"taco_pressure":-0.21,"TACO_FUCK":-0.45},{"date":"2025-12-29","vix":14.2,"t10y2y":0.67,"umcsent":52.9,"hy_spread":2.87,"sp500":6905.7,"F":-1.28,"U":-0.41,"C":1.4,"K":-0.77,"FUCK":-0.26,"taco_pressure":0.28,"TACO_FUCK":0.01},{"date":"2025-12-30","vix":14.3,"t10y2y":0.69,"umcsent":52.9,"hy_spread":2.84,"sp500":6896.2,"F":-1.21,"U":0.42,"C":1.35,"K":-1.02,"FUCK":-0.12,"taco_pressure":0.02,"TACO_FUCK":-0.05},{"date":"2025-12-31","vix":15.0,"t10y2y":0.71,"umcsent":52.9,"hy_spread":2.81,"sp500":6845.5,"F":-0.98,"U":0.42,"C":1.3,"K":-1.27,"FUCK":-0.13,"taco_pressure":0.59,"TACO_FUCK":0.23}];
+
+// ── TAB SWITCHING ──
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── EVENTS ──
+const EVENTS = [
+  {date:'2025-04-02',label:'Liberation Day tariffs announced',e:'\uD83D\uDCA5'},
+  {date:'2025-04-04',label:'Peak TACO FUCK \u2014 VIX 45, S&P freefall',e:'\uD83D\uDD25'},
+  {date:'2025-04-08',label:'VIX hits 52 \u2014 maximum fear',e:'\uD83D\uDEA8'},
+  {date:'2025-04-09',label:'90-day pause. Classic TACO.',e:'\uD83C\uDF2E'},
+  {date:'2025-05-12',label:'US-China Geneva trade talks',e:'\uD83E\uDD1D'},
+  {date:'2025-05-30',label:'FT coins TACO \u2014 goes mainstream',e:'\uD83D\uDCF0'},
+  {date:'2025-07-12',label:'30% tariff announced',e:'\uD83D\uDCC8'},
+  {date:'2025-07-27',label:'EU deal \u2014 some tariffs to zero',e:'\uD83C\uDF2E'},
+];
+
+// ── TICKER ──
+const tickerEl = document.getElementById('ticker');
+let tickerHTML = '';
+const tickerItems = [
+  'TACO FUCK INDEX',
+  'ALL DATA FROM FEDERAL RESERVE (FRED)',
+  'PEAK: APR 4 2025 // VIX 45.3 // S&P FREEFALL',
+  '"TRUMP ALWAYS CHICKENS OUT" \u2014 FT, MAY 2025',
+  'FEAR \u00B7 UNPREDICTABILITY \u00B7 CONSUMER COLLAPSE \u00B7 KHAOS',
+  'NOT FINANCIAL ADVICE. OBVIOUSLY.',
+  'TRUMP CALLED IT A "NASTY QUESTION"',
+  'DEUTSCHE BANK HAS A REAL INDEX FOR THIS',
+];
+for (let i = 0; i < 4; i++) {
+  tickerItems.forEach(t => {
+    tickerHTML += `<span class="ticker-text">${t}<span class="sep">\u25C6</span></span>`;
+  });
+}
+tickerEl.innerHTML = tickerHTML;
+
+// ── STATS ──
+const peak = DATA.reduce((a,b) => a.TACO_FUCK > b.TACO_FUCK ? a : b);
+const trough = DATA.reduce((a,b) => a.TACO_FUCK < b.TACO_FUCK ? a : b);
+const latest = DATA[DATA.length - 1];
+const peakVix = DATA.reduce((a,b) => a.vix > b.vix ? a : b);
+
+document.getElementById('stats').innerHTML = `
+  <div class="stat-card s-peak" data-label="PEAK INDEX">
+    <div class="stat-val">${peak.TACO_FUCK.toFixed(2)}</div>
+    <div class="stat-sub">${peak.date}</div>
+  </div>
+  <div class="stat-card s-fear" data-label="PEAK VIX">
+    <div class="stat-val">${peakVix.vix}</div>
+    <div class="stat-sub">${peakVix.date}</div>
+  </div>
+  <div class="stat-card s-calm" data-label="CALMEST">
+    <div class="stat-val">${trough.TACO_FUCK.toFixed(2)}</div>
+    <div class="stat-sub">${trough.date}</div>
+  </div>
+  <div class="stat-card s-latest" data-label="LATEST">
+    <div class="stat-val">${latest.TACO_FUCK > 0 ? '+' : ''}${latest.TACO_FUCK.toFixed(2)}</div>
+    <div class="stat-sub">${latest.date}</div>
+  </div>
+`;
+
+// ── THREAT LEVEL ──
+const latestScore = latest.TACO_FUCK;
+const peakScore = peak.TACO_FUCK;
+const normalizedScore = Math.max(0, Math.min(1, (latestScore + 2) / (peakScore + 2)));
+const barCount = 20;
+const litCount = Math.round(normalizedScore * barCount);
+const barsEl = document.getElementById('threat-bars');
+for (let i = 0; i < barCount; i++) {
+  const bar = document.createElement('div');
+  bar.className = 'threat-bar';
+  bar.style.height = (30 + Math.random() * 18) + 'px';
+  if (i < litCount) {
+    const pct = i / barCount;
+    if (pct < 0.25) bar.classList.add('lit-green');
+    else if (pct < 0.5) bar.classList.add('lit-yellow');
+    else if (pct < 0.75) bar.classList.add('lit-orange');
+    else bar.classList.add('lit-red');
+  }
+  barsEl.appendChild(bar);
+}
+
+const threatVal = document.getElementById('threat-value');
+const threatLabel = document.getElementById('threat-label');
+threatVal.textContent = latest.TACO_FUCK > 0 ? '+' + latest.TACO_FUCK.toFixed(2) : latest.TACO_FUCK.toFixed(2);
+threatVal.style.color = latestScore > 1.5 ? 'var(--red)' : latestScore > 0.5 ? 'var(--orange)' : latestScore > 0 ? 'var(--yellow)' : 'var(--cyan)';
+
+let defconLevel;
+if (latestScore > 2) { defconLevel = 1; threatLabel.textContent = 'TACO TIME'; }
+else if (latestScore > 1) { defconLevel = 2; threatLabel.textContent = 'OH SHIT'; }
+else if (latestScore > 0.3) { defconLevel = 3; threatLabel.textContent = 'SWEATING'; }
+else if (latestScore > -0.5) { defconLevel = 4; threatLabel.textContent = 'UNEASY'; }
+else { defconLevel = 5; threatLabel.textContent = 'VIBES OK'; }
+threatLabel.style.color = threatVal.style.color;
+
+document.querySelectorAll('.defcon-level').forEach(el => {
+  const level = parseInt(el.querySelector('.defcon-name').textContent);
+  if (level === defconLevel) el.classList.add('active');
+});
+
+// ── TIMELINE ──
+function renderTimeline(elId) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  EVENTS.forEach(ev => {
+    const match = DATA.find(d => d.date === ev.date);
+    const score = match ? match.TACO_FUCK.toFixed(2) : '\u2014';
+    const cls = match && match.TACO_FUCK > 1.5 ? 'hot' : match && match.TACO_FUCK > 0.5 ? 'warm' : 'cool';
+    el.innerHTML += `<div class="evt">
+      <span class="evt-date">${ev.e} ${ev.date}</span>
+      <span class="evt-label">${ev.label}</span>
+      <span class="evt-score ${cls}">${score}</span>
+    </div>`;
+  });
+}
+renderTimeline('timeline-exp');
+
+// ── CHARTS ──
+Chart.defaults.color = '#444';
+Chart.defaults.borderColor = 'rgba(30,30,30,0.8)';
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+Chart.defaults.font.size = 10;
+
+const labels = DATA.map(d => d.date);
+const annotations = {};
+[{d:'2025-04-02',l:'LIBERATION DAY'},{d:'2025-04-09',l:'90-DAY PAUSE'},{d:'2025-07-12',l:'30% TARIFF'}].forEach((e,i) => {
+  annotations['l'+i] = {
+    type:'line',xMin:e.d,xMax:e.d,
+    borderColor:'rgba(255,208,0,0.25)',borderWidth:1,borderDash:[3,3],
+    label:{display:true,content:e.l,position:'start',font:{size:8,family:"'IBM Plex Mono',monospace",weight:'700'},color:'rgba(255,208,0,0.5)',backgroundColor:'transparent'}
+  };
+});
+
+const tt = {backgroundColor:'#0a0a0a',borderColor:'#222',borderWidth:1,padding:10,titleFont:{weight:'700'},bodyFont:{size:10}};
+
+// Main chart
+new Chart(document.getElementById('mainChart'), {
+  type:'line',
+  data:{labels,datasets:[
+    {label:'TACO FUCK',data:DATA.map(d=>d.TACO_FUCK),borderColor:'#ff0032',
+      backgroundColor:function(ctx){const c=ctx.chart.ctx;if(!c)return'rgba(255,0,50,0.1)';const g=c.createLinearGradient(0,0,0,300);g.addColorStop(0,'rgba(255,0,50,0.3)');g.addColorStop(0.5,'rgba(255,0,50,0.05)');g.addColorStop(1,'rgba(255,0,50,0)');return g;},
+      fill:true,tension:0.3,pointRadius:0,borderWidth:2.5},
+    {label:'TACO',data:DATA.map(d=>d.taco_pressure),borderColor:'#ffd000',fill:false,tension:0.3,pointRadius:0,borderWidth:1.5,borderDash:[3,3]}
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:tt,annotation:{annotations}},
+    scales:{x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}},y:{grid:{color:'rgba(30,30,30,0.6)'}}}
+  }
+});
+
+// FUCK components
+new Chart(document.getElementById('fuckChart'), {
+  type:'line',
+  data:{labels,datasets:[
+    {label:'F',data:DATA.map(d=>d.F),borderColor:'#ff0032',fill:false,tension:0.3,pointRadius:0,borderWidth:1.8},
+    {label:'U',data:DATA.map(d=>d.U),borderColor:'#ff6600',fill:false,tension:0.3,pointRadius:0,borderWidth:1.8},
+    {label:'C',data:DATA.map(d=>d.C),borderColor:'#ff00aa',fill:false,tension:0.3,pointRadius:0,borderWidth:1.8},
+    {label:'K',data:DATA.map(d=>d.K),borderColor:'#ff0066',fill:false,tension:0.3,pointRadius:0,borderWidth:1.8},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:tt,annotation:{annotations}},
+    scales:{x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}},y:{grid:{color:'rgba(30,30,30,0.6)'}}}
+  }
+});
+
+// Raw data
+new Chart(document.getElementById('rawChart'), {
+  type:'line',
+  data:{labels,datasets:[
+    {label:'VIX',data:DATA.map(d=>d.vix),borderColor:'#ff0032',fill:false,tension:0.3,pointRadius:0,borderWidth:2,yAxisID:'y'},
+    {label:'S&P 500',data:DATA.map(d=>d.sp500),borderColor:'#00ffcc',fill:false,tension:0.3,pointRadius:0,borderWidth:2,yAxisID:'y1'},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+    plugins:{legend:{display:false},tooltip:tt,annotation:{annotations}},
+    scales:{
+      x:{ticks:{maxTicksLimit:8,maxRotation:0},grid:{display:false}},
+      y:{position:'left',grid:{color:'rgba(30,30,30,0.6)'},title:{display:true,text:'VIX',color:'#ff0032',font:{size:9}}},
+      y1:{position:'right',grid:{drawOnChartArea:false},title:{display:true,text:'S&P 500',color:'#00ffcc',font:{size:9}}}
+    }
+  }
+});
+
+// ── DATA TABLE ──
+let showAll = false;
+function toggleTable() {
+  showAll = !showAll;
+  renderTable();
+  document.querySelector('.data-toggle').textContent = showAll ? 'RECENT ONLY' : 'SHOW ALL';
+}
+
+function renderTable() {
+  const rows = showAll ? DATA : DATA.slice(-30);
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = '';
+  rows.forEach(d => {
+    const cls = d.TACO_FUCK > 1.5 ? 'hot' : d.TACO_FUCK > 0.5 ? 'warm' : d.TACO_FUCK < -0.5 ? 'cool' : '';
+    tbody.innerHTML += `<tr>
+      <td>${d.date}</td><td>${d.vix}</td><td>${d.sp500}</td><td>${d.umcsent}</td><td>${d.hy_spread}</td>
+      <td>${d.F}</td><td>${d.U}</td><td>${d.C}</td><td>${d.K}</td><td>${d.FUCK}</td><td>${d.taco_pressure}</td>
+      <td class="${cls}">${d.TACO_FUCK > 0 ? '+' : ''}${d.TACO_FUCK}</td>
+    </tr>`;
+  });
+}
+renderTable();
+</script>
+</body>
+</html>
